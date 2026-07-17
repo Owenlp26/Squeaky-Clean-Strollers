@@ -80,6 +80,7 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
           customerEmail: email,
           itemIds: selectedItems.map((i) => i.id),
           availability: selectedSlot ? [selectedSlot.label] : [],
+
           availabilityNotes: notes || undefined,
           selectedSlot: selectedSlot ?? undefined,
           isSubscription: isMonthlyBooking,
@@ -98,14 +99,7 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
     }
   }
 
-  const steps = ["Items", "Date & time", "Details", "Confirm"];
-
-  // Group slots by date for display
-  const slotsByDate: Record<string, AvailabilitySlot[]> = {};
-  for (const slot of availableSlots) {
-    if (!slotsByDate[slot.date]) slotsByDate[slot.date] = [];
-    slotsByDate[slot.date].push(slot);
-  }
+  const steps = ["Items", "Date", "Details", "Confirm"];
 
   return (
     <div>
@@ -214,27 +208,27 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
               disabled={selectedItems.length === 0 || hasEmergency}
               className="rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-accent disabled:opacity-40"
             >
-              Next: Pick a slot
+              Next: Pick a date
             </button>
           </div>
         </div>
       )}
 
-      {/* Step 2: Slot picker */}
+      {/* Step 2: Date picker */}
       {step === 2 && (
         <div>
-          <h2 className="font-display text-2xl">Choose a date and time</h2>
+          <h2 className="font-display text-2xl">Choose a date</h2>
           <p className="mt-1 text-sm text-muted">
-            Select an available slot. Your booking will be confirmed as soon as your deposit clears.
+            Select an available date. Charlotte will confirm the exact drop-off time with you directly.
           </p>
 
           {slotsLoading ? (
-            <div className="mt-8 text-sm text-muted">Loading available slots...</div>
+            <div className="mt-8 text-sm text-muted">Loading available dates...</div>
           ) : availableSlots.length === 0 ? (
             <div className="mt-8 space-y-4">
               <div className="rounded-xl border border-border bg-card p-6 text-sm">
-                <p className="font-medium">No slots available right now.</p>
-                <p className="mt-1 text-muted">Please get in touch with Charlotte directly to arrange a time.</p>
+                <p className="font-medium">No dates available right now.</p>
+                <p className="mt-1 text-muted">Please get in touch with Charlotte directly to arrange a date.</p>
                 <a
                   href="tel:+447344279177"
                   className="mt-4 inline-block rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background hover:bg-accent"
@@ -245,51 +239,34 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
               {process.env.NODE_ENV === "development" && (
                 <div className="rounded-xl border border-dashed border-amber-400 bg-amber-50 p-4 text-sm">
                   <p className="font-medium text-amber-800">Dev mode — no Google Calendar connected</p>
-                  <p className="mt-1 text-amber-700">Use a test slot to proceed through the payment flow.</p>
+                  <p className="mt-1 text-amber-700">Use a test date to proceed through the payment flow.</p>
                   <button
                     type="button"
-                    onClick={() => setSelectedSlot({ date: "2026-07-14", startTime: "09:00", endTime: "11:30", label: "Mon 14 Jul, 9:00am" })}
+                    onClick={() => setSelectedSlot({ date: "2026-07-14", label: "Mon 14 Jul" })}
                     className="mt-3 rounded-full bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600"
                   >
-                    Use test slot: Mon 14 Jul, 9:00am
+                    Use test date: Mon 14 Jul
                   </button>
                 </div>
               )}
             </div>
           ) : (
-            <div className="mt-6 space-y-6">
-              {Object.entries(slotsByDate).map(([date, slots]) => {
-                const d = new Date(`${date}T12:00:00`);
-                const dayName = d.toLocaleDateString("en-GB", { weekday: "long" });
-                const dateFormatted = d.toLocaleDateString("en-GB", { day: "numeric", month: "long" });
+            <div className="mt-6 flex flex-wrap gap-3">
+              {availableSlots.map((slot) => {
+                const isSelected = selectedSlot?.date === slot.date;
                 return (
-                  <div key={date}>
-                    <div className="mb-2 text-xs font-medium uppercase tracking-[0.18em] text-muted">
-                      {dayName}, {dateFormatted}
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {slots.map((slot) => {
-                        const isSelected = selectedSlot?.date === slot.date && selectedSlot?.startTime === slot.startTime;
-                        return (
-                          <button
-                            key={`${slot.date}-${slot.startTime}`}
-                            type="button"
-                            onClick={() => setSelectedSlot(slot)}
-                            className={`rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors ${
-                              isSelected
-                                ? "border-accent bg-accent text-background"
-                                : "border-border bg-card hover:border-accent hover:text-accent"
-                            }`}
-                          >
-                            {slot.startTime}
-                            <span className="ml-1.5 text-xs opacity-60">
-                              to {slot.endTime}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
+                  <button
+                    key={slot.date}
+                    type="button"
+                    onClick={() => setSelectedSlot(slot)}
+                    className={`rounded-xl border px-5 py-3 text-sm font-medium transition-colors ${
+                      isSelected
+                        ? "border-accent bg-accent text-background"
+                        : "border-border bg-card hover:border-accent hover:text-accent"
+                    }`}
+                  >
+                    {slot.label}
+                  </button>
                 );
               })}
             </div>
@@ -298,9 +275,7 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
           {selectedSlot && (
             <div className="mt-6 rounded-xl border border-accent bg-accent-soft p-4 text-sm">
               <div className="font-medium text-accent">Selected: {selectedSlot.label}</div>
-              <div className="mt-0.5 text-xs text-muted">
-                {selectedSlot.startTime} to {selectedSlot.endTime}
-              </div>
+              <div className="mt-0.5 text-xs text-muted">Charlotte will confirm your drop-off time directly.</div>
             </div>
           )}
 

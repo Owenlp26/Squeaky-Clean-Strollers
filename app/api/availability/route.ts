@@ -2,37 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAvailableWindows } from "@/lib/google-calendar";
 
 export type AvailabilitySlot = {
-  date: string;      // "2025-06-23"
-  startTime: string; // "09:00"
-  endTime: string;   // "11:30"
-  label: string;     // "Mon 23 Jun, 9:00am"
+  date: string;  // "2025-06-23"
+  label: string; // "Mon 23 Jun"
 };
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-function formatSlotLabel(date: string, startTime: string): string {
-  const d = new Date(`${date}T${startTime}`);
-  const day = DAY_NAMES[d.getDay()];
-  const month = MONTH_NAMES[d.getMonth()];
-  const dateNum = d.getDate();
-  const hour = d.getHours();
-  const min = d.getMinutes();
-  const ampm = hour < 12 ? "am" : "pm";
-  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
-  const minStr = min === 0 ? "" : `:${String(min).padStart(2, "0")}`;
-  return `${day} ${dateNum} ${month}, ${hour12}${minStr}${ampm}`;
+function formatDateLabel(date: string): string {
+  const d = new Date(`${date}T12:00:00`);
+  return `${DAY_NAMES[d.getDay()]} ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`;
 }
 
 function timeToMinutes(time: string): number {
   const [h, m] = time.split(":").map(Number);
   return h * 60 + m;
-}
-
-function minutesToTime(mins: number): string {
-  const h = Math.floor(mins / 60);
-  const m = mins % 60;
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
 export async function GET(req: NextRequest) {
@@ -55,36 +39,23 @@ export async function GET(req: NextRequest) {
 
     const durationHours = durationParam ? parseFloat(durationParam) : 0;
 
-    if (!durationHours || durationHours <= 0) {
-      return NextResponse.json({ slots: [] });
-    }
-
     const windows = await getAvailableWindows(from, to);
 
     if (windows.length === 0) {
       return NextResponse.json({ slots: [] });
     }
 
-    const durationMins = Math.ceil(durationHours * 60);
+    const durationMins = durationHours > 0 ? Math.ceil(durationHours * 60) : 0;
+    const seenDates = new Set<string>();
     const slots: AvailabilitySlot[] = [];
 
     for (const window of windows) {
-      const windowStartMins = timeToMinutes(window.start);
-      const windowEndMins = timeToMinutes(window.end);
-
-      // Slice window into consecutive blocks of durationMins
-      let cursor = windowStartMins;
-      while (cursor + durationMins <= windowEndMins) {
-        const slotStart = minutesToTime(cursor);
-        const slotEnd = minutesToTime(cursor + durationMins);
-        slots.push({
-          date: window.date,
-          startTime: slotStart,
-          endTime: slotEnd,
-          label: formatSlotLabel(window.date, slotStart),
-        });
-        cursor += durationMins;
-      }
+      if (seenDates.has(window.date)) continue;
+      // Only include the date if the window is long enough for the service
+      const windowMins = timeToMinutes(window.end) - timeToMinutes(window.start);
+      if (durationMins > 0 && windowMins < durationMins) continue;
+      seenDates.add(window.date);
+      slots.push({ date: window.date, label: formatDateLabel(window.date) });
     }
 
     return NextResponse.json({ slots });
