@@ -1,6 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  // Defense in depth: verify the admin session in-handler, not just in middleware.
+  if (!(await requireAdmin(req))) {
+    return NextResponse.redirect(new URL("/admin/login", req.url));
+  }
+
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 

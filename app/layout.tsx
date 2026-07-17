@@ -12,6 +12,11 @@ const jost = Jost({
   display: "swap",
 });
 
+// Nonce-based CSP (see middleware.ts) requires per-request rendering: a fresh
+// nonce only exists at request time, so pages can't be statically prerendered.
+// This forces dynamic rendering across every route under the root layout.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Squeaky Clean Strollers | East Renfrewshire's pram cleaning specialists",
   description:

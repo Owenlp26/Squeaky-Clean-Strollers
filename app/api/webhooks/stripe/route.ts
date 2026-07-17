@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe-client";
+import { redis } from "@/lib/db";
 import { getBooking, updateBooking } from "@/lib/bookings";
 import { sendEmail, emailLayout, itemsTable, escapeHtml } from "@/lib/email";
 import { createBookingEvent } from "@/lib/google-calendar";
@@ -24,6 +25,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
+  // Idempotency: Stripe guarantees at-least-once delivery and retries on any
+  // timeout or non-2xx, so the same event can arrive more than once. Claim the
+  // event id atomically (SET NX) before doing any side effects; if the key
+  // already exists we've handled this event, so acknowledge and stop rather
+  // than sending duplicate emails/SMS or creating duplicate calendar events.
+  // If Redis is unavailable we fall through and rely on the booking-status
+  // guard below as a second line of defence.
+  try {
+    const claimed = await redis.set(`stripe_event:${event.id}`, "1", {
+      nx: true,
+      ex: 60 * 60 * 24 * 3, // keep the dedupe marker for 3 days
+    });
+    if (claimed === null) {
+      return NextResponse.json({ ok: true, deduped: true });
+    }
+  } catch (err) {
+    console.error("Webhook idempotency claim failed (processing anyway):", err);
+  }
+
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
     const bookingId = session.metadata?.bookingId;
@@ -31,6 +51,13 @@ export async function POST(req: NextRequest) {
 
     const booking = await getBooking(bookingId);
     if (!booking) return NextResponse.json({ ok: true });
+
+    // Second line of defence against duplicate processing (e.g. if the
+    // event-id dedupe above couldn't run because Redis was briefly down):
+    // a booking that's already confirmed has had its notifications sent.
+    if (booking.status === "confirmed") {
+      return NextResponse.json({ ok: true, deduped: true });
+    }
 
     const slot = booking.selectedSlot;
     const slotLabel = slot?.label ?? booking.confirmedSlot ?? "TBC";

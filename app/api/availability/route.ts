@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAvailableWindows } from "@/lib/google-calendar";
+import { redis } from "@/lib/db";
+import { getClientIp } from "@/lib/client-ip";
+
+const MAX_REQUESTS_PER_WINDOW = 60;
+const RATE_WINDOW_SECONDS = 10 * 60; // 10 minutes
+const MAX_RANGE_DAYS = 92; // clamp attacker-supplied ranges to a sane maximum
 
 export type AvailabilitySlot = {
   date: string;  // "2025-06-23"
@@ -21,6 +27,24 @@ function timeToMinutes(time: string): number {
 
 export async function GET(req: NextRequest) {
   try {
+    // Rate limit by IP: this endpoint is public and each call hits the Google
+    // Calendar API, so throttle it to prevent quota-exhaustion abuse. Fail open
+    // if Redis is unavailable so genuine customers are never blocked.
+    const ip = getClientIp(req);
+    try {
+      const rateKey = `availability_attempts:${ip}`;
+      const count = await redis.incr(rateKey);
+      if (count === 1) await redis.expire(rateKey, RATE_WINDOW_SECONDS);
+      if (count > MAX_REQUESTS_PER_WINDOW) {
+        return NextResponse.json(
+          { error: "Too many requests. Please try again later." },
+          { status: 429 }
+        );
+      }
+    } catch (err) {
+      console.error("Availability rate-limit check failed (allowing):", err);
+    }
+
     const { searchParams } = new URL(req.url);
     const fromParam = searchParams.get("from");
     const toParam = searchParams.get("to");
@@ -31,11 +55,19 @@ export async function GET(req: NextRequest) {
     }
 
     const from = new Date(fromParam);
-    const to = new Date(toParam);
+    let to = new Date(toParam);
 
     if (isNaN(from.getTime()) || isNaN(to.getTime())) {
       return NextResponse.json({ error: "Invalid dates" }, { status: 400 });
     }
+
+    if (to <= from) {
+      return NextResponse.json({ error: "Invalid date range" }, { status: 400 });
+    }
+
+    // Clamp the queried range so a caller can't ask Google for years of data.
+    const maxTo = new Date(from.getTime() + MAX_RANGE_DAYS * 24 * 60 * 60 * 1000);
+    if (to > maxTo) to = maxTo;
 
     const durationHours = durationParam ? parseFloat(durationParam) : 0;
 

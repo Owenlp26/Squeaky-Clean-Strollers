@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getBooking, updateBooking } from "@/lib/bookings";
+import { requireAdmin } from "@/lib/admin-auth";
 import { sendEmail, emailLayout, itemsTable, escapeHtml } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
+    // Defense in depth: verify the admin session in-handler, not just in middleware.
+    if (!(await requireAdmin(req))) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { bookingId, confirmedSlot } = await req.json();
 
     if (!bookingId || !confirmedSlot) {

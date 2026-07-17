@@ -7,6 +7,8 @@
  * Payload:       { exp: <epoch ms> }
  */
 
+import type { NextRequest } from "next/server";
+
 const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
 function b64urlFromBytes(bytes: Uint8Array): string {
@@ -87,3 +89,26 @@ export function safeEqual(a: string, b: string): boolean {
 
 export const ADMIN_COOKIE_NAME = "admin_auth";
 export const ADMIN_COOKIE_MAX_AGE = COOKIE_MAX_AGE_SECONDS;
+
+/**
+ * Secret used to sign/verify session tokens. Prefer a dedicated
+ * ADMIN_SESSION_SECRET so the signing key is decoupled from the login password
+ * (rotating one no longer forces the other to change). Falls back to
+ * ADMIN_PASSWORD so the app keeps working with zero extra configuration.
+ */
+export function getSessionSecret(): string | undefined {
+  return process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD;
+}
+
+/**
+ * Defense-in-depth admin check for route handlers. The middleware already gates
+ * every /admin and /api/admin path, but verifying the session inside the
+ * handler too means a single middleware-matcher mistake or framework bug can't
+ * expose a state-changing endpoint on its own.
+ */
+export async function requireAdmin(req: NextRequest): Promise<boolean> {
+  const secret = getSessionSecret();
+  if (!secret) return false;
+  const token = req.cookies.get(ADMIN_COOKIE_NAME)?.value;
+  return verifySessionToken(secret, token);
+}

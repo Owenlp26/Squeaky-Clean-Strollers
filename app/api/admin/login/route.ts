@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { redis } from "@/lib/db";
+import { getClientIp } from "@/lib/client-ip";
 import {
   createSessionToken,
+  getSessionSecret,
   safeEqual,
   ADMIN_COOKIE_NAME,
   ADMIN_COOKIE_MAX_AGE,
@@ -21,10 +23,7 @@ export async function POST(req: NextRequest) {
 
   // Rate limit by client IP to blunt brute-force attempts. If Redis is
   // unavailable we let the attempt through rather than locking everyone out.
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    req.headers.get("x-real-ip") ||
-    "unknown";
+  const ip = getClientIp(req);
   const rateKey = `login_attempts:${ip}`;
 
   try {
@@ -62,11 +61,18 @@ export async function POST(req: NextRequest) {
     /* non-fatal */
   }
 
-  const token = await createSessionToken(adminPassword);
+  // Sign with the session secret (ADMIN_SESSION_SECRET if set, else the
+  // password) so the token key can be rotated independently of the password.
+  const token = await createSessionToken(getSessionSecret()!);
   const res = NextResponse.json({ ok: true });
   res.cookies.set(ADMIN_COOKIE_NAME, token, {
     httpOnly: true,
-    sameSite: "strict",
+    // "lax" (not "strict") so the cookie is still sent on the top-level GET
+    // navigation back from Google's OAuth consent to /api/admin/calendar-callback.
+    // Strict would withhold it there and the middleware would bounce the callback
+    // to /admin/login, breaking calendar setup. State-changing endpoints are POST,
+    // and lax withholds the cookie on cross-site POST/fetch, so CSRF is still covered.
+    sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     maxAge: ADMIN_COOKIE_MAX_AGE,
     path: "/",

@@ -3,6 +3,7 @@ import { createBooking, updateBooking, type BookingItem, type BookingSlot } from
 import { stripe } from "@/lib/stripe-client";
 import { getServiceItemById } from "@/data/services";
 import { redis } from "@/lib/db";
+import { getClientIp } from "@/lib/client-ip";
 
 const MAX_BOOKINGS_PER_WINDOW = 15;
 const WINDOW_SECONDS = 60 * 60; // 1 hour
@@ -13,10 +14,7 @@ export async function POST(req: NextRequest) {
   try {
     // Rate limit by IP to prevent booking/Stripe-session spam. Fail open if
     // Redis is unavailable so genuine customers are never blocked.
-    const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      req.headers.get("x-real-ip") ||
-      "unknown";
+    const ip = getClientIp(req);
     try {
       const rateKey = `booking_attempts:${ip}`;
       const count = await redis.incr(rateKey);
