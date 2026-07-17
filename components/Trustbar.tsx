@@ -1,18 +1,37 @@
-const featured = ["Time Out", "Mother & Baby", "Hackney Citizen", "Bugaboo", "iCandy"];
+const items = [
+  "Sparkling clean, every single time",
+  "No judgement service",
+  "Safe for your little one, always",
+  "Back with you in 4 days",
+  "Trusted by local families",
+  "Based in East Renfrewshire",
+];
 
 export function Trustbar() {
   return (
-    <section className="border-y border-border/60 bg-card/60">
-      <div className="mx-auto max-w-6xl px-6 py-8">
-        <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-xs uppercase tracking-[0.2em] text-muted">
-          <span className="text-foreground/70">As featured in</span>
-          {featured.map((name) => (
-            <span key={name} className="font-display text-base normal-case tracking-tight">
-              {name}
-            </span>
-          ))}
-        </div>
+    <div
+      className="overflow-hidden py-4"
+      style={{
+        background: "var(--gold)",
+        borderTop: "none",
+        borderBottom: "none",
+      }}
+    >
+      <div className="flex animate-marquee whitespace-nowrap">
+        {[...items, ...items].map((item, i) => (
+          <span
+            key={i}
+            className="inline-flex items-center gap-5 px-8 text-xs uppercase tracking-[0.22em]"
+            style={{ color: "#ffffff" }}
+          >
+            {item}
+            <span
+              className="inline-block h-px w-5 flex-shrink-0"
+              style={{ background: "rgba(42,40,37,0.4)" }}
+            />
+          </span>
+        ))}
       </div>
-    </section>
+    </div>
   );
 }
