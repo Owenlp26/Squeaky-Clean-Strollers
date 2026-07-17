@@ -1,10 +1,12 @@
 import { redis } from "./db";
+import { encryptSecret, decryptSecret } from "./token-crypto";
 
 const REFRESH_TOKEN_KEY = "google:calendar:refresh_token";
 
 async function getAccessToken(): Promise<string | null> {
-  const refreshToken = await redis.get<string>(REFRESH_TOKEN_KEY);
-  if (!refreshToken) return null;
+  const stored = await redis.get<string>(REFRESH_TOKEN_KEY);
+  if (!stored) return null;
+  const refreshToken = await decryptSecret(stored);
 
   const res = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
@@ -164,7 +166,7 @@ export async function createBookingEvent(params: {
 }
 
 export async function saveRefreshToken(token: string): Promise<void> {
-  await redis.set(REFRESH_TOKEN_KEY, token);
+  await redis.set(REFRESH_TOKEN_KEY, await encryptSecret(token));
 }
 
 export async function isCalendarConnected(): Promise<boolean> {
