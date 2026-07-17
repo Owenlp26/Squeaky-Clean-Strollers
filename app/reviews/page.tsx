@@ -131,7 +131,7 @@ export default function ReviewsPage() {
               We&apos;d love it if you left us a review on Google. It helps other families across East Renfrewshire find us.
             </p>
             <a
-              href="https://www.google.com/maps?ftid=0x4bf50c323cc4dd2b:0xa5dd17b78f07d8d9&entry=gps"
+              href="https://share.google/UuJXuKoeugvN3WRNh"
               target="_blank"
               rel="noreferrer"
               className="mt-5 inline-flex items-center rounded-full px-6 py-3 text-sm font-medium transition-colors"
