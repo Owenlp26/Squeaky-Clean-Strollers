@@ -51,7 +51,7 @@ export function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, ease: EASE, delay: 0.1 }}
-            style={{ color: "rgba(255,255,255,0.5)", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.3em", display: "block" }}
+            style={{ color: "rgba(255,255,255,0.85)", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.25em", display: "block", fontWeight: 500 }}
           >
             East Renfrewshire&apos;s baby equipment cleaning specialist
           </motion.span>
