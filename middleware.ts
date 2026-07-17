@@ -1,20 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifySessionToken, ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (!pathname.startsWith("/admin") && !pathname.startsWith("/api/admin")) {
+  // Login page and login API must stay reachable so users can authenticate.
+  if (pathname === "/admin/login" || pathname === "/api/admin/login") {
     return NextResponse.next();
   }
 
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminPassword) return NextResponse.next();
+  const secret = process.env.ADMIN_PASSWORD;
 
-  const auth = req.cookies.get("admin_auth")?.value;
-  if (auth === adminPassword) return NextResponse.next();
+  // Fail CLOSED: if no admin secret is configured, deny access rather than
+  // silently exposing the whole admin area.
+  if (!secret) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/admin/login";
+    url.searchParams.set("error", "not_configured");
+    return NextResponse.redirect(url);
+  }
 
-  // Login page and login API — don't redirect to avoid loop
-  if (pathname === "/admin/login" || pathname === "/api/admin/login") return NextResponse.next();
+  const token = req.cookies.get(ADMIN_COOKIE_NAME)?.value;
+  if (await verifySessionToken(secret, token)) {
+    return NextResponse.next();
+  }
 
   const loginUrl = req.nextUrl.clone();
   loginUrl.pathname = "/admin/login";

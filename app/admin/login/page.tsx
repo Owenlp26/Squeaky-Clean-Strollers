@@ -11,7 +11,9 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const from = searchParams.get("from") ?? "/admin/calendar-setup";
+  const fromParam = searchParams.get("from") ?? "/admin/calendar-setup";
+  // Only allow internal admin redirects — never an attacker-supplied external URL.
+  const from = fromParam.startsWith("/admin") ? fromParam : "/admin/calendar-setup";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
