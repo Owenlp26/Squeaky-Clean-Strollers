@@ -2,14 +2,52 @@ import { NextRequest, NextResponse } from "next/server";
 import { createBooking, updateBooking, type BookingItem, type BookingSlot } from "@/lib/bookings";
 import { stripe } from "@/lib/stripe-client";
 import { getServiceItemById } from "@/data/services";
+import { redis } from "@/lib/db";
+
+const MAX_BOOKINGS_PER_WINDOW = 15;
+const WINDOW_SECONDS = 60 * 60; // 1 hour
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^[+0-9()\s-]{7,20}$/;
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit by IP to prevent booking/Stripe-session spam. Fail open if
+    // Redis is unavailable so genuine customers are never blocked.
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+    try {
+      const rateKey = `booking_attempts:${ip}`;
+      const count = await redis.incr(rateKey);
+      if (count === 1) await redis.expire(rateKey, WINDOW_SECONDS);
+      if (count > MAX_BOOKINGS_PER_WINDOW) {
+        return NextResponse.json(
+          { error: "Too many booking attempts. Please try again later." },
+          { status: 429 }
+        );
+      }
+    } catch (err) {
+      console.error("Booking rate-limit check failed (allowing):", err);
+    }
+
     const body = await req.json();
     const { customerName, customerPhone, customerEmail, itemIds, availability, availabilityNotes, selectedSlot, isSubscription } = body;
 
     if (!customerName || !customerPhone || !customerEmail || !itemIds?.length || !availability?.length) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    // Validate shapes and sizes before doing any work.
+    if (
+      typeof customerName !== "string" || customerName.length > 100 ||
+      typeof customerEmail !== "string" || !EMAIL_RE.test(customerEmail) ||
+      typeof customerPhone !== "string" || !PHONE_RE.test(customerPhone) ||
+      !Array.isArray(itemIds) || itemIds.length > 20 ||
+      !itemIds.every((id: unknown) => typeof id === "string") ||
+      (availabilityNotes != null && (typeof availabilityNotes !== "string" || availabilityNotes.length > 2000))
+    ) {
+      return NextResponse.json({ error: "Invalid booking details" }, { status: 400 });
     }
 
     // Resolve items from catalogue

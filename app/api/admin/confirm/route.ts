@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getBooking, updateBooking } from "@/lib/bookings";
-import { sendEmail, emailLayout, itemsTable } from "@/lib/email";
+import { sendEmail, emailLayout, itemsTable, escapeHtml } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,15 +17,19 @@ export async function POST(req: NextRequest) {
 
     await updateBooking(bookingId, { status: "confirmed", confirmedSlot });
 
+    const safeName = escapeHtml(booking.customerName);
+    const safeSlot = escapeHtml(confirmedSlot);
+    const safeBookingId = escapeHtml(bookingId);
+
     await sendEmail(
       booking.customerEmail,
       `You're booked in -- ${confirmedSlot}`,
       emailLayout(`
         <h2 style="margin:0 0 8px;font-size:22px;color:#1f1d1a;">You're booked in!</h2>
-        <p style="margin:0 0 20px;color:#6b6660;">Hi ${booking.customerName}, your drop-off slot has been confirmed. See you then!</p>
+        <p style="margin:0 0 20px;color:#6b6660;">Hi ${safeName}, your drop-off slot has been confirmed. See you then!</p>
         <table width="100%" style="border-collapse:collapse;margin:0 0 16px;">
-          <tr><td style="padding:4px 0;color:#6b6660;width:180px;">Drop-off slot</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">${confirmedSlot}</td></tr>
-          <tr><td style="padding:4px 0;color:#6b6660;">Booking ID</td><td style="padding:4px 0;color:#1f1d1a;">${bookingId}</td></tr>
+          <tr><td style="padding:4px 0;color:#6b6660;width:180px;">Drop-off slot</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">${safeSlot}</td></tr>
+          <tr><td style="padding:4px 0;color:#6b6660;">Booking ID</td><td style="padding:4px 0;color:#1f1d1a;">${safeBookingId}</td></tr>
           <tr><td style="padding:4px 0;color:#6b6660;">Deposit paid</td><td style="padding:4px 0;color:#1f1d1a;">£${booking.depositGBP}</td></tr>
           <tr><td style="padding:4px 0;color:#6b6660;">Remainder on collection</td><td style="padding:4px 0;color:#1f1d1a;">£${booking.totalGBP - booking.depositGBP}</td></tr>
         </table>

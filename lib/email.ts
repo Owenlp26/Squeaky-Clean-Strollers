@@ -9,6 +9,16 @@ function getResend(): Resend {
 
 const FROM = "Squeaky Clean Strollers <bookings@squeakycleanstrollers.com>";
 
+/** Escape user-supplied text before interpolating into email HTML. */
+export function escapeHtml(value: unknown): string {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export async function sendEmail(to: string, subject: string, html: string): Promise<void> {
   const result = await getResend().emails.send({ from: FROM, to, subject, html });
   if (result.error) {
@@ -45,6 +55,6 @@ export function ctaButton(href: string, label: string): string {
 }
 
 export function itemsTable(items: { name: string; priceGBP: number }[]): string {
-  const rows = items.map(i => `<tr><td style="padding:6px 0;color:#1f1d1a;">${i.name}</td><td style="padding:6px 0;text-align:right;color:#1f1d1a;">£${i.priceGBP}</td></tr>`).join("");
+  const rows = items.map(i => `<tr><td style="padding:6px 0;color:#1f1d1a;">${escapeHtml(i.name)}</td><td style="padding:6px 0;text-align:right;color:#1f1d1a;">£${Number(i.priceGBP)}</td></tr>`).join("");
   return `<table width="100%" style="border-collapse:collapse;margin:16px 0;">${rows}</table>`;
 }

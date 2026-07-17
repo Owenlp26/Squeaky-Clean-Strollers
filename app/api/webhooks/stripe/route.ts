@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe-client";
 import { getBooking, updateBooking } from "@/lib/bookings";
-import { sendEmail, emailLayout, itemsTable } from "@/lib/email";
+import { sendEmail, emailLayout, itemsTable, escapeHtml } from "@/lib/email";
 import { createBookingEvent } from "@/lib/google-calendar";
 import { sendSMS } from "@/lib/sms";
 
@@ -36,6 +36,13 @@ export async function POST(req: NextRequest) {
     const slotLabel = slot?.label ?? booking.confirmedSlot ?? "TBC";
     const isSubscription = session.mode === "subscription";
 
+    // HTML-escaped copies of user-supplied fields, for safe use in email bodies.
+    // (SMS and calendar events use plaintext, so they keep the raw values.)
+    const safeName = escapeHtml(booking.customerName);
+    const safePhone = escapeHtml(booking.customerPhone);
+    const safeEmail = escapeHtml(booking.customerEmail);
+    const safeSlot = escapeHtml(slotLabel);
+
     if (isSubscription) {
       // Monthly package — store subscription IDs, send subscription-specific emails
       const subscriptionId = typeof session.subscription === "string" ? session.subscription : session.subscription?.id;
@@ -53,11 +60,11 @@ export async function POST(req: NextRequest) {
         `New monthly subscriber: ${booking.customerName}`,
         emailLayout(`
           <h2 style="margin:0 0 8px;font-size:22px;color:#1f1d1a;">New monthly subscriber!</h2>
-          <p style="margin:0 0 20px;color:#6b6660;">£70/month subscription started. First clean arranged for <strong style="color:#1f1d1a;">${slotLabel}</strong>. Contact them to arrange drop-off.</p>
+          <p style="margin:0 0 20px;color:#6b6660;">£70/month subscription started. First clean arranged for <strong style="color:#1f1d1a;">${safeSlot}</strong>. Contact them to arrange drop-off.</p>
           <table width="100%" style="border-collapse:collapse;margin:0 0 16px;">
-            <tr><td style="padding:4px 0;color:#6b6660;width:120px;">Customer</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">${booking.customerName}</td></tr>
-            <tr><td style="padding:4px 0;color:#6b6660;">Phone</td><td style="padding:4px 0;color:#1f1d1a;">${booking.customerPhone}</td></tr>
-            <tr><td style="padding:4px 0;color:#6b6660;">Email</td><td style="padding:4px 0;color:#1f1d1a;">${booking.customerEmail}</td></tr>
+            <tr><td style="padding:4px 0;color:#6b6660;width:120px;">Customer</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">${safeName}</td></tr>
+            <tr><td style="padding:4px 0;color:#6b6660;">Phone</td><td style="padding:4px 0;color:#1f1d1a;">${safePhone}</td></tr>
+            <tr><td style="padding:4px 0;color:#6b6660;">Email</td><td style="padding:4px 0;color:#1f1d1a;">${safeEmail}</td></tr>
             <tr><td style="padding:4px 0;color:#6b6660;">Plan</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">£70/month, monthly clean</td></tr>
             <tr><td style="padding:4px 0;color:#6b6660;">Booking ID</td><td style="padding:4px 0;color:#1f1d1a;">${bookingId}</td></tr>
           </table>
@@ -69,7 +76,7 @@ export async function POST(req: NextRequest) {
         `Your monthly subscription is confirmed`,
         emailLayout(`
           <h2 style="margin:0 0 8px;font-size:22px;color:#1f1d1a;">You&apos;re subscribed!</h2>
-          <p style="margin:0 0 20px;color:#6b6660;">Hi ${booking.customerName}, your monthly clean subscription is confirmed. First payment of £70 taken today. You&apos;ll be billed again each month.</p>
+          <p style="margin:0 0 20px;color:#6b6660;">Hi ${safeName}, your monthly clean subscription is confirmed. First payment of £70 taken today. You&apos;ll be billed again each month.</p>
           <p style="margin:0 0 20px;color:#6b6660;">Charlotte will be in touch to arrange your first drop-off. Book your monthly slot between the 1st–5th of each month.</p>
           <p style="margin:0;color:#6b6660;font-size:13px;">Any questions? Contact Charlotte at charlottesweeney7@gmail.com or 07344 279177</p>
         `)
@@ -109,10 +116,10 @@ export async function POST(req: NextRequest) {
           <h2 style="margin:0 0 8px;font-size:22px;color:#1f1d1a;">New paid booking!</h2>
           <p style="margin:0 0 20px;color:#6b6660;">Deposit of <strong style="color:#1f1d1a;">£${booking.depositGBP}</strong> received. The slot is confirmed. Please arrange a drop-off time with the customer directly.</p>
           <table width="100%" style="border-collapse:collapse;margin:0 0 16px;">
-            <tr><td style="padding:4px 0;color:#6b6660;width:120px;">Customer</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">${booking.customerName}</td></tr>
-            <tr><td style="padding:4px 0;color:#6b6660;">Phone</td><td style="padding:4px 0;color:#1f1d1a;">${booking.customerPhone}</td></tr>
-            <tr><td style="padding:4px 0;color:#6b6660;">Email</td><td style="padding:4px 0;color:#1f1d1a;">${booking.customerEmail}</td></tr>
-            <tr><td style="padding:4px 0;color:#6b6660;">Slot</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">${slotLabel}</td></tr>
+            <tr><td style="padding:4px 0;color:#6b6660;width:120px;">Customer</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">${safeName}</td></tr>
+            <tr><td style="padding:4px 0;color:#6b6660;">Phone</td><td style="padding:4px 0;color:#1f1d1a;">${safePhone}</td></tr>
+            <tr><td style="padding:4px 0;color:#6b6660;">Email</td><td style="padding:4px 0;color:#1f1d1a;">${safeEmail}</td></tr>
+            <tr><td style="padding:4px 0;color:#6b6660;">Slot</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">${safeSlot}</td></tr>
             <tr><td style="padding:4px 0;color:#6b6660;">Booking ID</td><td style="padding:4px 0;color:#1f1d1a;">${bookingId}</td></tr>
             <tr><td style="padding:4px 0;color:#6b6660;">Total</td><td style="padding:4px 0;color:#1f1d1a;">£${booking.totalGBP} (£${booking.depositGBP} paid, £${booking.totalGBP - booking.depositGBP} on collection)</td></tr>
           </table>
@@ -127,7 +134,7 @@ export async function POST(req: NextRequest) {
         `Your booking is confirmed: ${slotLabel}`,
         emailLayout(`
           <h2 style="margin:0 0 8px;font-size:22px;color:#1f1d1a;">You&apos;re booked in!</h2>
-          <p style="margin:0 0 20px;color:#6b6660;">Hi ${booking.customerName}, your booking is confirmed for <strong style="color:#1f1d1a;">${slotLabel}</strong>. Charlotte will be in touch to arrange your drop-off time.</p>
+          <p style="margin:0 0 20px;color:#6b6660;">Hi ${safeName}, your booking is confirmed for <strong style="color:#1f1d1a;">${safeSlot}</strong>. Charlotte will be in touch to arrange your drop-off time.</p>
           <p style="margin:0 0 8px;color:#6b6660;font-size:13px;">Items booked:</p>
           ${itemsTable(booking.items)}
           <table width="100%" style="border-collapse:collapse;margin:0 0 16px;">
