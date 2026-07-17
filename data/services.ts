@@ -23,7 +23,7 @@ export const serviceCategories: ServiceCategory[] = [
     description: "6 day max turnaround unless stated.",
     items: [
       { id: "single-buggy", name: "Single pram / buggy with detachable frame", priceGBP: 42, turnaroundDays: 6, durationHours: 5 },
-      { id: "doona", name: "Doona", priceGBP: 35, turnaroundDays: 2, durationHours: 4, note: "2 day max turnaround" },
+      { id: "doona", name: "Doona", priceGBP: 35, turnaroundDays: 6, durationHours: 4 },
       { id: "foldable-pram", name: "Foldable / travel pram", priceGBP: 38, turnaroundDays: 6, durationHours: 5 },
       { id: "double-buggy", name: "Double pram / buggy with detachable frame", priceGBP: 60, turnaroundDays: 6, durationHours: 6 },
       { id: "double-foldable-buggy", name: "Double travel buggy (inc. Baby Jogger type)", priceGBP: 55, turnaroundDays: 6, durationHours: 6 },
@@ -37,7 +37,7 @@ export const serviceCategories: ServiceCategory[] = [
     id: "other",
     label: "Other Items",
     items: [
-      { id: "car-seat", name: "Car seat", priceGBP: 35, turnaroundDays: 2, durationHours: 4, note: "2 day max turnaround" },
+      { id: "car-seat", name: "Car seat", priceGBP: 35, turnaroundDays: 6, durationHours: 4 },
       { id: "travel-cot", name: "Travel cot / next to me crib", priceGBP: 30, turnaroundDays: 6, durationHours: 4 },
       { id: "high-chair", name: "High chair", priceGBP: 32, turnaroundDays: 6, durationHours: 4 },
       { id: "sleepyhead", name: "Sleepyhead / Dock-a-Tot", priceGBP: 30, turnaroundDays: 6, durationHours: 4 },
@@ -95,7 +95,7 @@ export const serviceCategories: ServiceCategory[] = [
     items: [
       { id: "emergency-car-seat", name: "Emergency car seat clean", priceGBP: 35, turnaroundDays: 1, durationHours: 1.5, note: "24hr turnaround. +£15 emergency surcharge applies. Contact Charlotte to arrange." },
       { id: "emergency-buggy", name: "Emergency buggy clean", priceGBP: 42, pricePrefix: "from", turnaroundDays: 1, durationHours: 2.5, note: "24hr turnaround. +£15 emergency surcharge applies. Contact Charlotte to arrange." },
-      { id: "soiled-mould-charge", name: "Soiled / mould surcharge", priceGBP: 8, turnaroundDays: 6, durationHours: 0, note: "Per item, always confirmed before we proceed" },
+      { id: "soiled-mould-charge", name: "Soiled / mould surcharge", priceGBP: 8, turnaroundDays: 6, durationHours: 0.5, note: "Per item, always confirmed before we proceed" },
     ],
   },
 ];

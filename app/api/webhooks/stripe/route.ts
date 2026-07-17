@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
 
       await sendSMS(
         booking.customerPhone,
-        `Hi ${booking.customerName.split(" ")[0]}, your Squeaky Clean Strollers monthly subscription is confirmed (£70/month). Charlotte will be in touch to arrange your first drop-off. 07344 279177`
+        `Hi ${(booking.customerName ?? "").split(" ")[0] || "there"}, your Squeaky Clean Strollers monthly subscription is confirmed (£70/month). Charlotte will be in touch to arrange your first drop-off. 07344 279177`
       );
 
       await sendSMS(
@@ -89,16 +89,11 @@ export async function POST(req: NextRequest) {
       let calendarEventId: string | null = null;
       if (slot) {
         const itemNames = booking.items.map((i) => i.name).join(", ");
-        const durationHours =
-          (new Date(`${slot.date}T${slot.endTime}`).getTime() -
-            new Date(`${slot.date}T${slot.startTime}`).getTime()) /
-          3600000;
-
         calendarEventId = await createBookingEvent({
           title: `BOOKED: ${booking.customerName} / ${itemNames}`,
           date: slot.date,
-          startTime: slot.startTime,
-          durationHours,
+          startTime: "09:00",
+          durationHours: 4,
         });
       }
 
@@ -145,7 +140,7 @@ export async function POST(req: NextRequest) {
 
       await sendSMS(
         booking.customerPhone,
-        `Hi ${booking.customerName.split(" ")[0]}, your Squeaky Clean Strollers booking is confirmed for ${slotLabel}. Charlotte will text you to arrange drop-off. Questions? 07344 279177`
+        `Hi ${(booking.customerName ?? "").split(" ")[0] || "there"}, your Squeaky Clean Strollers booking is confirmed for ${slotLabel}. Charlotte will text you to arrange drop-off. Questions? 07344 279177`
       );
 
       const itemSummary = booking.items.map((i) => i.name).join(", ");

@@ -139,7 +139,6 @@ export default function ReviewsPage() {
             >
               Leave a Google review
             </a>
-            <p className="mt-3 text-xs" style={{ color: "rgba(253,250,244,0.3)" }}>(Google Business link — update with Charlotte&apos;s real URL)</p>
           </div>
         </div>
       </div>

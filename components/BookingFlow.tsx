@@ -378,7 +378,6 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
               <div className="rounded-2xl border border-border bg-card p-5">
                 <div className="text-xs uppercase tracking-[0.15em] text-muted mb-3">Booked slot</div>
                 <div className="text-sm font-medium">{selectedSlot.label}</div>
-                <div className="mt-0.5 text-xs text-muted">{selectedSlot.startTime} to {selectedSlot.endTime}</div>
                 <p className="mt-2 text-xs text-muted">Charlotte will contact you to confirm a drop-off time.</p>
               </div>
             )}

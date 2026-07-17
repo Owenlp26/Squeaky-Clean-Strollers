@@ -119,7 +119,7 @@ export async function createBookingEvent(params: {
   if (!accessToken) return null;
 
   const [year, month, day] = params.date.split("-").map(Number);
-  const [startHour, startMin] = params.startTime.split(":").map(Number);
+  const [startHour, startMin] = (params.startTime ?? "09:00").split(":").map(Number);
 
   const startDt = new Date(year, month - 1, day, startHour, startMin);
   const endDt = new Date(startDt.getTime() + params.durationHours * 60 * 60 * 1000);

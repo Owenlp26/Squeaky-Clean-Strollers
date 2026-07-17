@@ -15,10 +15,8 @@ export type BookingItem = {
 };
 
 export type BookingSlot = {
-  date: string;      // "2025-06-23"
-  startTime: string; // "09:00"
-  endTime: string;   // "11:30"
-  label: string;     // "Mon 23 Jun, 9:00am"
+  date: string;
+  label: string;
 };
 
 export type Booking = {

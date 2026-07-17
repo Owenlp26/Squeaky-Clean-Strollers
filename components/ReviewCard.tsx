@@ -12,7 +12,7 @@ interface ReviewCardProps {
   index?: number;
 }
 
-export function ReviewCard({ quote, author, item, dark = false, index = 0 }: ReviewCardProps) {
+export function ReviewCard({ quote, author, item, rating = 5, dark = false, index = 0 }: ReviewCardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const quoteRef = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
@@ -74,6 +74,13 @@ export function ReviewCard({ quote, author, item, dark = false, index = 0 }: Rev
 
       {/* Author */}
       <div className="mt-auto pt-4">
+        <div className="flex gap-0.5 mb-1">
+          {Array.from({ length: rating }).map((_, i) => (
+            <svg key={i} width="12" height="12" viewBox="0 0 12 12" fill="var(--gold)" aria-hidden>
+              <path d="M6 1l1.3 2.6L10 4l-2 1.9.5 2.7L6 7.4l-2.5 1.2.5-2.7L2 4l2.7-.4z" />
+            </svg>
+          ))}
+        </div>
         <span
           className="text-xs uppercase tracking-[0.2em]"
           style={{ color: dark ? "rgba(253,250,244,0.6)" : "var(--taupe)" }}
