@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
@@ -9,30 +10,36 @@ type NavLink = { href: string; label: string };
 
 export function MobileNav({ links }: { links: NavLink[] }) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  return (
-    <div className="lg:hidden">
-      <button
-        onClick={() => setOpen(true)}
-        aria-label="Open menu"
-        className="flex h-9 w-9 items-center justify-center rounded-full border transition-colors duration-200"
-        style={{ borderColor: "rgba(42,40,37,0.2)", color: "var(--charcoal)" }}
-      >
-        <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-          <path fillRule="evenodd" d="M3 5h14a1 1 0 1 1 0 2H3a1 1 0 0 1 0-2Zm0 4h14a1 1 0 1 1 0 2H3a1 1 0 0 1 0-2Zm0 4h14a1 1 0 1 1 0 2H3a1 1 0 0 1 0-2Z" clipRule="evenodd" />
-        </svg>
-      </button>
+  useEffect(() => setMounted(true), []);
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50"
-            style={{ background: "var(--charcoal)" }}
-          >
+  // Lock background scroll while the full-screen menu is open.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
+  // The overlay is rendered into <body> via a portal so it escapes the
+  // header's stacking/containing context. The header uses backdrop-filter,
+  // which makes it the containing block for position:fixed descendants —
+  // without the portal the overlay would be trapped in the header's box
+  // instead of covering the viewport.
+  const overlay = (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 z-[60]"
+          style={{ background: "var(--charcoal)" }}
+        >
             <div className="flex h-full flex-col px-6 py-6">
               <div className="flex items-center justify-between">
                 <span
@@ -89,6 +96,21 @@ export function MobileNav({ links }: { links: NavLink[] }) {
           </motion.div>
         )}
       </AnimatePresence>
+  );
+
+  return (
+    <div className="lg:hidden">
+      <button
+        onClick={() => setOpen(true)}
+        aria-label="Open menu"
+        className="flex h-9 w-9 items-center justify-center rounded-full border transition-colors duration-200"
+        style={{ borderColor: "rgba(42,40,37,0.2)", color: "var(--charcoal)" }}
+      >
+        <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+          <path fillRule="evenodd" d="M3 5h14a1 1 0 1 1 0 2H3a1 1 0 0 1 0-2Zm0 4h14a1 1 0 1 1 0 2H3a1 1 0 0 1 0-2Zm0 4h14a1 1 0 1 1 0 2H3a1 1 0 0 1 0-2Z" clipRule="evenodd" />
+        </svg>
+      </button>
+      {mounted && createPortal(overlay, document.body)}
     </div>
   );
 }
