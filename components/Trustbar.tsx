@@ -2,7 +2,7 @@ const items = [
   "Sparkling clean, every single time",
   "No judgement service",
   "Safe for your little one, always",
-  "Back with you in 4 days",
+  "Back with you in 6 days",
   "Trusted by local families",
   "Based in East Renfrewshire",
 ];

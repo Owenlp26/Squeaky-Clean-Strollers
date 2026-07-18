@@ -5,17 +5,17 @@ import { FadeUp } from "@/components/FadeUp";
 
 export const metadata: Metadata = {
   title: "How It Works | Squeaky Clean Strollers",
-  description: "Drop off your pram or baby gear at our East Renfrewshire workshop. We deep clean it and you collect it back spotless in 2 to 4 days.",
+  description: "Drop off your pram or baby gear at our East Renfrewshire workshop. We deep clean it and you collect it back spotless in 2 to 6 days.",
 };
 
 const turnaroundItems = [
-  { name: "Single pram / buggy", turnaround: "Up to 4 days" },
-  { name: "Double pram / buggy", turnaround: "Up to 4 days" },
+  { name: "Single pram / buggy", turnaround: "Up to 6 days" },
+  { name: "Double pram / buggy", turnaround: "Up to 6 days" },
   { name: "Doona", turnaround: "Up to 2 days" },
   { name: "Car seat", turnaround: "Up to 2 days" },
-  { name: "Travel cot / next to me crib", turnaround: "Up to 4 days" },
-  { name: "High chair / bouncer / Sleepyhead", turnaround: "Up to 4 days" },
-  { name: "Changing bag / footmuff / cover", turnaround: "Up to 4 days" },
+  { name: "Travel cot / next to me crib", turnaround: "Up to 6 days" },
+  { name: "High chair / bouncer / Sleepyhead", turnaround: "Up to 6 days" },
+  { name: "Changing bag / footmuff / cover", turnaround: "Up to 6 days" },
   { name: "Emergency buggy clean", turnaround: "24 hours" },
   { name: "Emergency car seat clean", turnaround: "24 hours" },
 ];

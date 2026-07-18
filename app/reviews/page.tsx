@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { ReviewCard } from "@/components/ReviewCard";
+import { ReviewCarousel } from "@/components/ReviewCarousel";
 import { FadeUp } from "@/components/FadeUp";
 import { useRef, useEffect, useState } from "react";
 import { useInView } from "framer-motion";
@@ -111,14 +110,10 @@ export default function ReviewsPage() {
         </div>
       </div>
 
-      {/* Review cards — cream */}
+      {/* Review slideshow — cream */}
       <div className="px-6 py-16" style={{ background: "var(--cream)" }}>
         <div className="mx-auto max-w-6xl">
-          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-            {reviews.map((r, i) => (
-              <ReviewCard key={r.name + r.date} quote={r.body} author={r.name} item={r.item} index={i} />
-            ))}
-          </div>
+          <ReviewCarousel reviews={reviews} />
         </div>
       </div>
 
