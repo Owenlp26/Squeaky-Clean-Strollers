@@ -28,10 +28,10 @@ export default function HowItWorksPage() {
         <div className="mx-auto max-w-6xl">
           <FadeUp className="max-w-2xl">
             <h1 className="font-display text-4xl tracking-tight sm:text-5xl" style={{ color: "#ffffff" }}>
-              Simple, fast, no fuss.
+              One drop off and that job is off your list for good.
             </h1>
             <p className="mt-4 text-base" style={{ color: "rgba(253,250,244,0.6)" }}>
-              Drop it off. We do the hard work. You get it back spotless.
+              You bring your items to us exactly as they are, we take care of everything and you collect them sparkling clean, sanitised and fresh.
             </p>
           </FadeUp>
         </div>
