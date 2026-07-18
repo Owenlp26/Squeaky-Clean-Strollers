@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 const turnaroundItems = [
   { name: "Single pram / buggy", turnaround: "Up to 6 days" },
   { name: "Double pram / buggy", turnaround: "Up to 6 days" },
-  { name: "Doona", turnaround: "Up to 2 days" },
-  { name: "Car seat", turnaround: "Up to 2 days" },
+  { name: "Doona", turnaround: "Up to 6 days" },
+  { name: "Car seat", turnaround: "Up to 6 days" },
   { name: "Travel cot / next to me crib", turnaround: "Up to 6 days" },
   { name: "High chair / bouncer / Sleepyhead", turnaround: "Up to 6 days" },
   { name: "Changing bag / footmuff / cover", turnaround: "Up to 6 days" },

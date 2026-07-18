@@ -10,7 +10,7 @@ const faqs = [
   },
   {
     q: "How long will my items take to be ready?",
-    a: "We know you cannot be without your baby items for long so we work as quickly as possible to get them back to you sparkling clean. Most items are ready within 6 days and car seats and Doonas within 2 days. Need it back sooner? Just ask about our 24-hour emergency clean, available for car seats from £45 and buggies from £48.",
+    a: "We know you cannot be without your baby items for long so we work as quickly as possible to get them back to you sparkling clean. Most items are ready within 6 days. Need it back sooner? Just ask about our 24-hour emergency clean, available for car seats from £45 and buggies from £48.",
   },
   {
     q: "What products do you use and are they safe for my baby?",

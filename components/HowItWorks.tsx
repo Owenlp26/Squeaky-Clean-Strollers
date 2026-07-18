@@ -23,7 +23,7 @@ const steps = [
   {
     n: "04",
     title: "Collect your items",
-    body: "When your items are sparkling clean, sanitised and fully dried we will let you know they are ready to collect from our East Renfrewshire location. Most items are ready within 6 days, car seats and Doonas within 2 days, and for those moments when you need it sooner we also offer a 24-hour emergency clean.",
+    body: "When your items are sparkling clean, sanitised and fully dried we will let you know they are ready to collect from our East Renfrewshire location. Most items are ready within 6 days, and for those moments when you need it sooner we also offer a 24-hour emergency clean.",
   },
 ];
 
