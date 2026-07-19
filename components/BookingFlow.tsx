@@ -22,6 +22,7 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
+  const [payInFull, setPayInFull] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [availableSlots, setAvailableSlots] = useState<AvailabilitySlot[]>([]);
@@ -84,6 +85,7 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
           availabilityNotes: notes || undefined,
           selectedSlot: selectedSlot ?? undefined,
           isSubscription: isMonthlyBooking,
+          payInFull: !isMonthlyBooking && payInFull,
         }),
       });
       if (!res.ok) {
@@ -361,16 +363,29 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
                   <span>£{total}/month</span>
                 </div>
               ) : (
-                <>
-                  <div className="mt-1 flex justify-between text-sm text-accent">
-                    <span>Deposit to pay now (25%)</span>
-                    <span>£{deposit}</span>
+                <div className="mt-4 border-t border-border pt-4">
+                  <div className="mb-2 text-xs uppercase tracking-[0.15em] text-muted">How would you like to pay?</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPayInFull(false)}
+                      className={`rounded-xl border px-3 py-3 text-left transition-colors ${!payInFull ? "border-accent bg-accent-soft" : "border-border bg-card hover:border-accent/50"}`}
+                    >
+                      <div className="text-sm font-medium">25% deposit now</div>
+                      <div className="font-display text-lg font-semibold">£{deposit}</div>
+                      <div className="text-xs text-muted">£{total - deposit} on collection</div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPayInFull(true)}
+                      className={`rounded-xl border px-3 py-3 text-left transition-colors ${payInFull ? "border-accent bg-accent-soft" : "border-border bg-card hover:border-accent/50"}`}
+                    >
+                      <div className="text-sm font-medium">Pay in full now</div>
+                      <div className="font-display text-lg font-semibold">£{total}</div>
+                      <div className="text-xs text-muted">Nothing on collection</div>
+                    </button>
                   </div>
-                  <div className="mt-1 flex justify-between text-xs text-muted">
-                    <span>Remainder on collection</span>
-                    <span>£{total - deposit}</span>
-                  </div>
-                </>
+                </div>
               )}
             </div>
 
@@ -398,7 +413,9 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
 
           {isMonthlyBooking
             ? <p className="mt-4 text-xs text-muted">By continuing, you&apos;ll start a recurring subscription of £{total}/month. Your first payment is taken today and you&apos;ll be billed monthly. Charlotte will be in touch to arrange drop-off each month.</p>
-            : <p className="mt-4 text-xs text-muted">By continuing, you&apos;ll pay a £{deposit} deposit (25%) to secure your slot. The remainder of £{total - deposit} is due on collection.</p>
+            : payInFull
+              ? <p className="mt-4 text-xs text-muted">By continuing, you&apos;ll pay the full £{total} now to secure your slot. Nothing is due on collection.</p>
+              : <p className="mt-4 text-xs text-muted">By continuing, you&apos;ll pay a £{deposit} deposit (25%) to secure your slot. The remainder of £{total - deposit} is due on collection.</p>
           }
 
           {/* Disclaimer */}
@@ -423,7 +440,7 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
               disabled={submitting || !disclaimerAccepted}
               className="rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-accent disabled:opacity-60"
             >
-              {submitting ? "Sending..." : isMonthlyBooking ? "Start subscription" : "Pay deposit & confirm"}
+              {submitting ? "Sending..." : isMonthlyBooking ? "Start subscription" : payInFull ? `Pay £${total} & confirm` : `Pay £${deposit} deposit & confirm`}
             </button>
           </div>
         </div>

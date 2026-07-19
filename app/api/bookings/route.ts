@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { customerName, customerPhone, customerEmail, itemIds, availability, availabilityNotes, selectedSlot, isSubscription } = body;
+    const { customerName, customerPhone, customerEmail, itemIds, availability, availabilityNotes, selectedSlot, isSubscription, payInFull } = body;
 
     if (!customerName || !customerPhone || !customerEmail || !itemIds?.length || !availability?.length) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -58,6 +58,11 @@ export async function POST(req: NextRequest) {
     const totalGBP = items.reduce((sum, i) => sum + i.priceGBP, 0);
     const depositGBP = isSubscription ? totalGBP : Math.ceil(totalGBP * 0.25);
 
+    // Standard bookings can be paid either as a 25% deposit or in full — the
+    // customer chooses at checkout. The amount charged now reflects that choice.
+    const paidInFull = !isSubscription && !!payInFull;
+    const amountNowGBP = paidInFull ? totalGBP : depositGBP;
+
     // Create booking first so we have the ID for Stripe metadata
     const booking = await createBooking({
       customerName,
@@ -70,6 +75,7 @@ export async function POST(req: NextRequest) {
       availabilityNotes,
       selectedSlot: selectedSlot as BookingSlot | undefined,
       isSubscription: !!isSubscription,
+      paidInFull,
     });
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -90,7 +96,7 @@ export async function POST(req: NextRequest) {
         cancel_url: `${siteUrl}/book`,
       });
     } else {
-      // Standard booking — 25% deposit via one-off payment
+      // Standard booking — 25% deposit or full payment via one-off payment
       session = await stripe.checkout.sessions.create({
         mode: "payment",
         line_items: [
@@ -98,9 +104,9 @@ export async function POST(req: NextRequest) {
             quantity: 1,
             price_data: {
               currency: "gbp",
-              unit_amount: depositGBP * 100,
+              unit_amount: amountNowGBP * 100,
               product_data: {
-                name: `Booking deposit (${booking.id})`,
+                name: paidInFull ? `Full payment (${booking.id})` : `Booking deposit (${booking.id})`,
                 description: items.map((i) => i.name).join(", "),
               },
             },

@@ -119,7 +119,11 @@ export async function POST(req: NextRequest) {
         `New monthly subscriber: ${booking.customerName}, £70/month started. Contact to arrange first clean.`
       );
     } else {
-      // Standard one-off booking
+      // Standard one-off booking — the customer paid either a 25% deposit or in full.
+      const paidInFull = !!booking.paidInFull;
+      const amountPaidGBP = paidInFull ? booking.totalGBP : booking.depositGBP;
+      const remainderGBP = booking.totalGBP - amountPaidGBP;
+
       let calendarEventId: string | null = null;
       if (slot) {
         const itemNames = booking.items.map((i) => i.name).join(", ");
@@ -141,14 +145,14 @@ export async function POST(req: NextRequest) {
         `New booking paid: ${booking.customerName}, ${slotLabel}`,
         emailLayout(`
           <h2 style="margin:0 0 8px;font-size:22px;color:#1f1d1a;">New paid booking!</h2>
-          <p style="margin:0 0 20px;color:#6b6660;">Deposit of <strong style="color:#1f1d1a;">£${booking.depositGBP}</strong> received. The slot is confirmed. Please arrange a drop-off time with the customer directly.</p>
+          <p style="margin:0 0 20px;color:#6b6660;">${paidInFull ? `Full payment of <strong style="color:#1f1d1a;">£${booking.totalGBP}</strong> received` : `Deposit of <strong style="color:#1f1d1a;">£${booking.depositGBP}</strong> received`}. The slot is confirmed. Please arrange a drop-off time with the customer directly.</p>
           <table width="100%" style="border-collapse:collapse;margin:0 0 16px;">
             <tr><td style="padding:4px 0;color:#6b6660;width:120px;">Customer</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">${safeName}</td></tr>
             <tr><td style="padding:4px 0;color:#6b6660;">Phone</td><td style="padding:4px 0;color:#1f1d1a;">${safePhone}</td></tr>
             <tr><td style="padding:4px 0;color:#6b6660;">Email</td><td style="padding:4px 0;color:#1f1d1a;">${safeEmail}</td></tr>
             <tr><td style="padding:4px 0;color:#6b6660;">Slot</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">${safeSlot}</td></tr>
             <tr><td style="padding:4px 0;color:#6b6660;">Booking ID</td><td style="padding:4px 0;color:#1f1d1a;">${bookingId}</td></tr>
-            <tr><td style="padding:4px 0;color:#6b6660;">Total</td><td style="padding:4px 0;color:#1f1d1a;">£${booking.totalGBP} (£${booking.depositGBP} paid, £${booking.totalGBP - booking.depositGBP} on collection)</td></tr>
+            <tr><td style="padding:4px 0;color:#6b6660;">Total</td><td style="padding:4px 0;color:#1f1d1a;">£${booking.totalGBP} ${paidInFull ? "(paid in full)" : `(£${booking.depositGBP} paid, £${remainderGBP} on collection)`}</td></tr>
           </table>
           <p style="margin:0 0 4px;color:#6b6660;font-size:13px;">Items:</p>
           ${itemsTable(booking.items)}
@@ -165,8 +169,8 @@ export async function POST(req: NextRequest) {
           <p style="margin:0 0 8px;color:#6b6660;font-size:13px;">Items booked:</p>
           ${itemsTable(booking.items)}
           <table width="100%" style="border-collapse:collapse;margin:0 0 16px;">
-            <tr><td style="padding:4px 0;color:#6b6660;width:160px;">Deposit paid</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">£${booking.depositGBP}</td></tr>
-            <tr><td style="padding:4px 0;color:#6b6660;">Remainder on collection</td><td style="padding:4px 0;color:#1f1d1a;">£${booking.totalGBP - booking.depositGBP}</td></tr>
+            <tr><td style="padding:4px 0;color:#6b6660;width:160px;">${paidInFull ? "Paid in full" : "Deposit paid"}</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">£${amountPaidGBP}</td></tr>
+            <tr><td style="padding:4px 0;color:#6b6660;">${paidInFull ? "Due on collection" : "Remainder on collection"}</td><td style="padding:4px 0;color:#1f1d1a;">£${remainderGBP}</td></tr>
           </table>
           <p style="margin:0;color:#6b6660;font-size:13px;">Any questions? Contact Charlotte at charlottesweeney7@gmail.com or 07344 279177</p>
         `)
@@ -180,7 +184,7 @@ export async function POST(req: NextRequest) {
       const itemSummary = booking.items.map((i) => i.name).join(", ");
       await sendSMS(
         CHARLOTTE_PHONE,
-        `New booking paid: ${booking.customerName}, ${itemSummary}, ${slotLabel}. £${booking.totalGBP} total (£${booking.depositGBP} deposit received)`
+        `New booking paid: ${booking.customerName}, ${itemSummary}, ${slotLabel}. £${booking.totalGBP} total ${paidInFull ? "(paid in full)" : `(£${booking.depositGBP} deposit received)`}`
       );
     }
   }

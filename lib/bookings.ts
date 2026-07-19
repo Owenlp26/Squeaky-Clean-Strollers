@@ -31,6 +31,7 @@ export type Booking = {
   availability: string[];  // kept for backward compat; now typically just the slot label
   availabilityNotes?: string;
   selectedSlot?: BookingSlot;  // the specific slot the customer booked
+  paidInFull?: boolean;        // true if the customer chose to pay the full amount now (not just the deposit)
   confirmedSlot?: string;      // Charlotte's confirmed date/time text (legacy / edge cases)
   calendarEventId?: string;    // Google Calendar event ID created on payment
   stripeCheckoutUrl?: string;
