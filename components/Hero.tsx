@@ -53,7 +53,7 @@ export function Hero() {
             transition={{ duration: 0.6, ease: EASE, delay: 0.1 }}
             style={{ color: "rgba(255,255,255,0.85)", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.25em", display: "block", fontWeight: 500 }}
           >
-            East Renfrewshire&apos;s baby equipment cleaning specialist
+            East Renfrewshire and Glasgow&apos;s baby equipment cleaning specialist
           </motion.span>
 
           {/* Rule — draws in left to right */}
@@ -73,8 +73,8 @@ export function Hero() {
             style={{ fontSize: "clamp(3.5rem, 7vw, 7rem)", lineHeight: 1.05, letterSpacing: "-0.02em", color: "#ffffff" }}
           >
             Your baby items returned to you{" "}
-            <em style={{ color: "var(--gold)", fontStyle: "italic" }}>sparkling clean.</em>
-            <span style={{ display: "block", fontSize: "clamp(0.75rem, 1.5vw, 1.1rem)", fontWeight: 300, textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(255,255,255,0.5)", fontStyle: "italic", marginTop: "0.75rem" }}>Giving you one less thing to worry about.</span>
+            <em style={{ color: "var(--gold)", fontStyle: "italic" }}>sparkling clean</em>
+            <span style={{ display: "block", fontSize: "clamp(0.75rem, 1.5vw, 1.1rem)", fontWeight: 300, textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(255,255,255,0.5)", fontStyle: "italic", marginTop: "0.75rem" }}>Giving you one less thing to worry about</span>
           </motion.h1>
 
           {/* CTAs */}
@@ -92,7 +92,7 @@ export function Hero() {
                 onMouseEnter={(e) => { e.currentTarget.style.background = "var(--gold)"; e.currentTarget.style.color = "var(--charcoal)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.color = "var(--charcoal)"; }}
               >
-                Services &amp; pricing
+                Services &amp; Pricing
               </Link>
             </motion.div>
             <motion.div whileTap={{ scale: 0.97 }}>

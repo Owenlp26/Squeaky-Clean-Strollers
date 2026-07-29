@@ -8,12 +8,12 @@ const steps = [
   {
     n: "01",
     title: "Book your clean",
-    body: "Head to our booking page, choose your service and pick a date that works for you. We will confirm your slot within 24 hours and sort everything from there.",
+    body: "Head to our booking page, choose your service and pick a date that works for you.",
   },
   {
     n: "02",
     title: "Drop off your items",
-    body: "Simply drop your items off in East Renfrewshire at your agreed time. Bring them exactly as they are, no cleaning or preparation needed, and leave the rest completely to Charlotte.",
+    body: "Simply drop off your items at our G46 location at your agreed time. Bring them exactly as they are, no cleaning or preparation needed, and leave the rest completely to Charlotte.",
   },
   {
     n: "03",
@@ -23,7 +23,7 @@ const steps = [
   {
     n: "04",
     title: "Collect your items",
-    body: "When your items are sparkling clean, sanitised and fully dried we will let you know they are ready to collect from our East Renfrewshire location. Most items are ready within 6 days, and for those moments when you need it sooner we also offer a 24-hour emergency clean.",
+    body: "When your items are sparkling clean, sanitised and fully dried we will let you know they are ready to collect from our G46 location. Most items are ready within 6 days or less, and for those moments when you need it sooner we also offer an Emergency Clean / 24 hour service.",
   },
 ];
 
@@ -98,7 +98,7 @@ export function HowItWorks() {
             style={{ fontSize: "clamp(2.5rem, 5vw, 3.75rem)", color: "var(--charcoal)" }}
           >
             Our{" "}
-            <em style={{ color: "var(--gold)", fontStyle: "italic" }}>4 simple steps.</em>
+            <em style={{ color: "var(--gold)", fontStyle: "italic" }}>4 simple steps</em>
           </h2>
         </motion.div>
 
@@ -125,8 +125,8 @@ export function HowItWorks() {
           />
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(42,40,37,0.65) 0%, transparent 55%)" }} />
           <div className="absolute bottom-10 left-10">
-            <p className="font-display text-xs uppercase tracking-[0.25em]" style={{ color: "rgba(255,255,255,0.55)" }}>The process</p>
-            <p className="mt-2 font-display text-3xl font-light" style={{ color: "#ffffff" }}>Hand-washed. Steam-sanitised.<br />Thoroughly dried.</p>
+            <p className="font-display text-xs uppercase tracking-[0.25em]" style={{ color: "rgba(255,255,255,0.55)" }}>Trusted local service</p>
+            <p className="mt-2 font-display text-3xl font-light" style={{ color: "#ffffff" }}>Thorough. Reliable.<br />Friendly. Efficient.</p>
           </div>
         </motion.div>
       </div>

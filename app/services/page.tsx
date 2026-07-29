@@ -6,7 +6,7 @@ import { FadeUp } from "@/components/FadeUp";
 
 export const metadata: Metadata = {
   title: "Services & Pricing | Squeaky Clean Strollers",
-  description: "Full pricing for pram cleaning, car seat cleaning, and all baby gear. East Renfrewshire-based. Book in online.",
+  description: "Full pricing for pram cleaning, car seat cleaning, and all baby gear. Glasgow and East Renfrewshire-based. Book in online.",
 };
 
 export default function ServicesPage() {
@@ -17,7 +17,7 @@ export default function ServicesPage() {
         <div className="mx-auto max-w-6xl">
           <FadeUp className="max-w-3xl">
             <h1 className="font-display text-4xl tracking-tight sm:text-5xl" style={{ color: "#ffffff" }}>
-              Professional cleaning for everything your little one uses.
+              Professional cleaning for everything your little one uses
             </h1>
             <p className="mt-4 text-base max-w-2xl" style={{ color: "rgba(253,250,244,0.6)" }}>
               Your little one&apos;s equipment collects bacteria, grime and buildup in all the little places you cannot see and cannot reach no matter how often you wipe it down, which is why every service we offer is a full professional deep clean from top to bottom until every single part is sparkling clean, sanitised and genuinely fresh.
@@ -69,7 +69,7 @@ export default function ServicesPage() {
       <div className="px-6 py-20" style={{ background: "var(--charcoal)" }}>
         <div className="mx-auto max-w-6xl">
           <h2 className="font-display text-3xl sm:text-4xl" style={{ fontWeight: 500, color: "#ffffff" }}>
-            Got something unusual? Just ask.
+            Got something unusual? Just ask
           </h2>
           <p className="mt-3 text-base" style={{ color: "rgba(253,250,244,0.6)" }}>
             If your item isn&apos;t listed, get in touch and we&apos;ll quote you back the same day.

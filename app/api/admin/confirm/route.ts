@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
         </table>
         <p style="margin:0 0 8px;color:#6b6660;font-size:13px;">Items:</p>
         ${itemsTable(booking.items)}
-        <p style="margin:0 0 0;color:#6b6660;font-size:13px;">We'll send you the workshop address the day before your drop-off. Any questions, contact Charlotte at charlottesweeney7@gmail.com</p>
+        <p style="margin:0 0 0;color:#6b6660;font-size:13px;">We'll send you the workshop address the day before your drop-off. Any questions, contact Charlotte at charlotte@squeakycleanstrollers.com</p>
       `)
     );
 

@@ -9,6 +9,9 @@ function getResend(): Resend {
 
 const FROM = "Squeaky Clean Strollers <bookings@squeakycleanstrollers.com>";
 
+// Absolute URL for the logo — email clients cannot load relative/site paths.
+const LOGO_URL = `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://squeakycleanstrollers.com"}/logo.png`;
+
 /** Escape user-supplied text before interpolating into email HTML. */
 export function escapeHtml(value: unknown): string {
   return String(value ?? "")
@@ -35,14 +38,17 @@ export function emailLayout(content: string): string {
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#FDFAF4;padding:32px 16px;">
 <tr><td align="center">
 <table width="100%" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e8e3da;">
-<tr><td style="padding:24px 32px;border-bottom:1px solid #e8e3da;">
-<p style="margin:0;font-size:18px;font-weight:700;color:#A89A5A;letter-spacing:0.02em;">Squeaky Clean Strollers</p>
+<tr><td style="padding:20px 32px;border-bottom:1px solid #e8e3da;">
+<table cellpadding="0" cellspacing="0"><tr>
+<td style="padding-right:12px;vertical-align:middle;"><img src="${LOGO_URL}" width="40" height="40" alt="Squeaky Clean Strollers" style="display:block;border:0;width:40px;height:40px;object-fit:contain;" /></td>
+<td style="vertical-align:middle;"><p style="margin:0;font-size:18px;font-weight:700;color:#A89A5A;letter-spacing:0.02em;">Squeaky Clean Strollers</p></td>
+</tr></table>
 </td></tr>
 <tr><td style="padding:32px;">
 ${content}
 </td></tr>
 <tr><td style="padding:16px 32px;border-top:1px solid #e8e3da;background:#FDFAF4;">
-<p style="margin:0;font-size:12px;color:#6b6660;">Squeaky Clean Strollers, East Renfrewshire &bull; charlottesweeney7@gmail.com</p>
+<p style="margin:0;font-size:12px;color:#6b6660;">Squeaky Clean Strollers, Glasgow and East Renfrewshire &bull; charlotte@squeakycleanstrollers.com</p>
 </td></tr>
 </table>
 </td></tr>

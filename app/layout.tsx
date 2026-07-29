@@ -18,9 +18,9 @@ const jost = Jost({
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Squeaky Clean Strollers | East Renfrewshire's pram cleaning specialists",
+  title: "Squeaky Clean Strollers | Glasgow and East Renfrewshire's pram cleaning specialists",
   description:
-    "Premium hand-cleaning and sanitising for prams, buggies and travel systems. Drop off in East Renfrewshire, restored and returned to your door.",
+    "Premium hand-cleaning and sanitising for prams, buggies and travel systems. Drop off in Glasgow and East Renfrewshire, restored and returned to your door.",
 };
 
 export default function RootLayout({

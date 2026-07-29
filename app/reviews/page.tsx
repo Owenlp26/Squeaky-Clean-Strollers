@@ -97,7 +97,7 @@ export default function ReviewsPage() {
         <div className="mx-auto max-w-6xl">
           <FadeUp className="max-w-2xl">
             <h1 className="font-display text-4xl tracking-tight sm:text-5xl" style={{ color: "#ffffff" }}>
-              What families across East Renfrewshire are saying.
+              What families across Glasgow and East Renfrewshire are saying
             </h1>
           </FadeUp>
 
@@ -123,10 +123,10 @@ export default function ReviewsPage() {
           <div className="text-center">
             <h2 className="font-display text-2xl" style={{ fontWeight: 500, color: "#ffffff" }}>Had a great experience?</h2>
             <p className="mt-2 text-sm" style={{ color: "rgba(253,250,244,0.6)" }}>
-              We&apos;d love it if you left us a review on Google. It helps other families across East Renfrewshire find us.
+              We&apos;d love it if you left us a review on Google. It helps other families across Glasgow and East Renfrewshire find us.
             </p>
             <a
-              href="https://share.google/UuJXuKoeugvN3WRNh"
+              href="https://g.page/r/CdnYB4-3F92lEAE/review"
               target="_blank"
               rel="noreferrer"
               className="mt-5 inline-flex items-center rounded-full px-6 py-3 text-sm font-medium transition-colors"

@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "About | Squeaky Clean Strollers",
-  description: "Meet Charlotte, the baby equipment cleaning specialist behind Squeaky Clean Strollers, based in East Renfrewshire.",
+  description: "Meet Charlotte, the baby equipment cleaning specialist behind Squeaky Clean Strollers, based in Glasgow and East Renfrewshire.",
 };
 
 export default function AboutPage() {
@@ -15,7 +15,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-6xl">
           <div className="max-w-2xl">
             <h1 className="font-display text-4xl tracking-tight sm:text-5xl" style={{ color: "#ffffff" }}>
-              Meet the founder, Charlotte.
+              Meet the founder, Charlotte
             </h1>
           </div>
 
@@ -60,7 +60,7 @@ export default function AboutPage() {
                   alt="Charlotte at work cleaning baby gear"
                   width={420}
                   height={520}
-                  className="h-[320px] w-full object-cover object-center"
+                  className="h-[320px] w-full object-cover object-bottom"
                 />
               </div>
             </div>
@@ -73,7 +73,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-6xl">
           <div className="max-w-2xl mb-10">
             <h2 className="mt-4 font-display text-3xl tracking-tight sm:text-4xl" style={{ color: "var(--charcoal)" }}>
-              Beyond cleaning your items, it&apos;s about giving your time back.
+              Beyond cleaning your items, it&apos;s about giving your time back
             </h2>
           </div>
           <div className="space-y-5 text-base leading-relaxed max-w-3xl" style={{ color: "var(--taupe)" }}>
@@ -100,7 +100,7 @@ export default function AboutPage() {
       <div className="px-6 py-20 text-center" style={{ background: "var(--charcoal)" }}>
         <div className="mx-auto max-w-xl">
           <h2 className="font-display text-2xl" style={{ fontWeight: 500, color: "#ffffff" }}>Ready to get started?</h2>
-          <p className="mt-3" style={{ color: "rgba(253,250,244,0.6)" }}>Get in touch and we&apos;ll confirm your slot quickly.</p>
+          <p className="mt-3" style={{ color: "rgba(253,250,244,0.6)" }}>Get in touch and we&apos;ll confirm your slot quickly</p>
           <Link
             href="/book"
             className="mt-6 inline-flex rounded-full px-8 py-3 text-sm font-medium transition-colors"

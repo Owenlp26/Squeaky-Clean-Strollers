@@ -10,7 +10,7 @@ const faqs = [
   },
   {
     q: "How long will my items take to be ready?",
-    a: "We know you cannot be without your baby items for long so we work as quickly as possible to get them back to you sparkling clean. Most items are ready within 6 days. Need it back sooner? Just ask about our 24-hour emergency clean, available for car seats from £45 and buggies from £48.",
+    a: "We know you cannot be without your baby items for long so we work as quickly as possible to get them back to you sparkling clean. Most items are ready within 6 days. Need it back sooner? Just ask about our Emergency / 24 hour service, available for car seats and buggies from £50.",
   },
   {
     q: "What products do you use and are they safe for my baby?",
@@ -26,7 +26,7 @@ const faqs = [
   },
   {
     q: "How does the booking process work?",
-    a: "Booking is really simple! Head to our booking page, choose your service, pick a date and time that works for you and pay your deposit to secure your slot. Once you are booked in we will be in touch to confirm your drop off time and answer any questions you have. That is it, everything else is taken care of from there.",
+    a: "Booking is really simple! Head to our booking page, choose your service, pick a date that works for you and pay your deposit to secure your slot. Once you are booked in Charlotte will be in touch on WhatsApp to confirm your drop off time and answer any questions you have. That is it, everything else is taken care of from there.",
   },
   {
     q: "Is a deposit required to book?",
@@ -38,7 +38,7 @@ const faqs = [
   },
   {
     q: "Do you work with nurseries and childminders?",
-    a: "Yes absolutely and we would love to hear from you! We work with childminders and nurseries across East Renfrewshire offering regular scheduled cleans to keep your equipment consistently clean, safe and looking professional. Get in touch to find out more about our childminder and nursery packages.",
+    a: "Yes absolutely and we would love to hear from you! We work with childminders and nurseries across Glasgow and East Renfrewshire offering regular scheduled cleans to keep your equipment consistently clean, safe and looking professional. Get in touch to find out more about our childminder and nursery packages.",
   },
   {
     q: "What if I need to cancel or reschedule my booking?",
@@ -129,7 +129,7 @@ export function FAQ() {
             className="font-display leading-tight tracking-tight"
             style={{ fontSize: "clamp(2.5rem, 5vw, 3.75rem)", color: "var(--charcoal)" }}
           >
-            Things people ask.
+            Things people ask
           </h2>
         </motion.div>
 

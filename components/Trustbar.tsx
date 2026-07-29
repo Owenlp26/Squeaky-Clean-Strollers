@@ -1,10 +1,10 @@
 const items = [
   "Sparkling clean, every single time",
-  "No judgement service",
+  "Non-judgemental service",
   "Safe for your little one, always",
   "Back with you in 6 days",
   "Trusted by local families",
-  "Based in East Renfrewshire",
+  "Covering Glasgow and surrounding areas",
 ];
 
 export function Trustbar() {
@@ -18,7 +18,9 @@ export function Trustbar() {
       }}
     >
       <div className="flex animate-marquee whitespace-nowrap">
-        {[...items, ...items].map((item, i) => (
+        {/* Four copies so the track always exceeds viewport width; the -50%
+            translate loops seamlessly because copies are identical. */}
+        {[...items, ...items, ...items, ...items].map((item, i) => (
           <span
             key={i}
             className="inline-flex items-center gap-5 px-8 text-xs uppercase tracking-[0.22em]"

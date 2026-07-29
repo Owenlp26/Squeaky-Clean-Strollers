@@ -55,7 +55,7 @@ export default function Home() {
                 }}
               >
                 Whatever your little one uses,{" "}
-                <em style={{ color: "var(--gold)", fontStyle: "italic" }}>we can get it sparkling clean.</em>
+                <em style={{ color: "var(--gold)", fontStyle: "italic" }}>we can get it sparkling clean</em>
               </h2>
               <p
                 className="mt-4 text-base"
@@ -83,7 +83,7 @@ export default function Home() {
                   alt="Charlotte deep cleaning baby equipment"
                   width={420}
                   height={500}
-                  className="h-[460px] w-full object-cover object-center"
+                  className="h-[460px] w-full object-cover object-bottom"
                 />
               </div>
             </FadeUp>
@@ -119,7 +119,7 @@ export default function Home() {
                   color: "#ffffff",
                 }}
               >
-                What families across East Renfrewshire say.
+                What families across Glasgow and East Renfrewshire say
               </h2>
             </div>
             <Link
@@ -172,7 +172,7 @@ export default function Home() {
               >
                 Imagine collecting your baby items{" "}
                 <em style={{ color: "var(--gold)", fontStyle: "italic" }}>sparkling clean</em>
-                {" "}without having done a single thing yourself.
+                {" "}without having done a single thing yourself
               </h2>
               <p
                 className="mt-5 text-base mx-auto"

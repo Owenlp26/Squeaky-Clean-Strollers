@@ -5,7 +5,7 @@ import { FadeUp } from "@/components/FadeUp";
 
 export const metadata: Metadata = {
   title: "How It Works | Squeaky Clean Strollers",
-  description: "Drop off your pram or baby gear at our East Renfrewshire workshop. We deep clean it and you collect it back spotless in 2 to 6 days.",
+  description: "Drop off your pram or baby gear at our Glasgow and East Renfrewshire workshop. We deep clean it and you collect it back spotless in up to 6 days.",
 };
 
 const turnaroundItems = [
@@ -28,7 +28,7 @@ export default function HowItWorksPage() {
         <div className="mx-auto max-w-6xl">
           <FadeUp className="max-w-2xl">
             <h1 className="font-display text-4xl tracking-tight sm:text-5xl" style={{ color: "#ffffff" }}>
-              One drop off and that job is off your list for good.
+              One drop off and that job is off your list for good
             </h1>
             <p className="mt-4 text-base" style={{ color: "rgba(253,250,244,0.6)" }}>
               You bring your items to us exactly as they are, we take care of everything and you collect them sparkling clean, sanitised and fresh.
@@ -48,21 +48,21 @@ export default function HowItWorksPage() {
           </h2>
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="rounded-2xl p-6 text-sm leading-relaxed" style={{ background: "var(--cream)", border: "1px solid rgba(42,40,37,0.08)" }}>
-              <div className="font-display text-sm" style={{ color: "var(--gold)" }}>01 &amp; 02</div>
+              <div className="font-display text-sm" style={{ color: "var(--gold)" }}>01</div>
               <h3 className="mt-1 font-display text-lg font-semibold" style={{ color: "var(--charcoal)" }}>Getting started</h3>
               <p className="mt-2" style={{ color: "var(--taupe)" }}>
                 Fill in the booking form on the <Link href="/book" style={{ color: "var(--gold)" }} className="underline underline-offset-2">book in page</Link> with your item type, contact details and preferred drop-off date. Charlotte will confirm your slot and send through the workshop address.
               </p>
             </div>
             <div className="rounded-2xl p-6 text-sm leading-relaxed" style={{ background: "var(--cream)", border: "1px solid rgba(42,40,37,0.08)" }}>
-              <div className="font-display text-sm" style={{ color: "var(--gold)" }}>03</div>
+              <div className="font-display text-sm" style={{ color: "var(--gold)" }}>02</div>
               <h3 className="mt-1 font-display text-lg font-semibold" style={{ color: "var(--charcoal)" }}>The clean</h3>
               <p className="mt-2" style={{ color: "var(--taupe)" }}>
-                All fabric is removed where possible and deep cleaned with a specialist shampoo, then steam sanitised. Bases and frames are cleaned in every crevice: buckles, straps, wheels. Everything is reassembled once fully dry, then steam cleaned once more to make sure nothing is missed. If there&apos;s mould or heavy soiling, we&apos;ll always let you know before proceeding. A £8 surcharge applies.
+                Once your item has been dropped off this is fully inspected. All fabric is removed where possible and laundered or hand washed according to manufacturer&apos;s instructions, then steam sanitised. Bases and frames are cleaned in every crevice: buckles, straps, wheels. Everything is reassembled once fully dry, then steam cleaned once more to make sure nothing is missed. If there&apos;s mould or heavy soiling, we&apos;ll always let you know before proceeding. A £8 surcharge may apply.
               </p>
             </div>
             <div className="rounded-2xl p-6 text-sm leading-relaxed" style={{ background: "var(--cream)", border: "1px solid rgba(42,40,37,0.08)" }}>
-              <div className="font-display text-sm" style={{ color: "var(--gold)" }}>04</div>
+              <div className="font-display text-sm" style={{ color: "var(--gold)" }}>03</div>
               <h3 className="mt-1 font-display text-lg font-semibold" style={{ color: "var(--charcoal)" }}>Come and collect</h3>
               <p className="mt-2" style={{ color: "var(--taupe)" }}>
                 Once your item is ready, Charlotte will let you know and you come and collect it from the workshop. Fresh, clean and ready to go.

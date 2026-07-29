@@ -187,14 +187,16 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
               <p className="mt-1 text-amber-800">For 24-hour turnaround, please contact Charlotte directly to check availability and arrange your clean.</p>
               <div className="mt-4 flex flex-col gap-2 sm:flex-row">
                 <a
-                  href="tel:+447344279177"
+                  href="https://wa.me/447344279177"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium transition-colors"
                   style={{ background: "var(--charcoal)", color: "var(--cream)" }}
                 >
-                  Call 07344 279177
+                  WhatsApp or Message 07344279177
                 </a>
                 <a
-                  href="mailto:charlottesweeney7@gmail.com"
+                  href="mailto:charlotte@squeakycleanstrollers.com"
                   className="inline-flex items-center justify-center rounded-full border px-5 py-2.5 text-sm font-medium transition-colors"
                   style={{ borderColor: "var(--border-color)", color: "var(--taupe)" }}
                 >
@@ -427,7 +429,18 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
               className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-border accent-foreground"
             />
             <span className="text-xs text-muted leading-relaxed">
-              I understand that Squeaky Clean Strollers does not accept liability for the safety of items cleaned. It is my responsibility to read and follow the manufacturer&apos;s guidelines for my items.
+              I have read and agree to the{" "}
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="underline underline-offset-2"
+                style={{ color: "var(--gold)" }}
+              >
+                Terms &amp; Conditions
+              </a>
+              , and understand that Squeaky Clean Strollers does not accept liability for the safety of items cleaned. It is my responsibility to read and follow the manufacturer&apos;s guidelines for my items.
             </span>
           </label>
 

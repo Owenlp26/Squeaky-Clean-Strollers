@@ -8,7 +8,7 @@ import { sendSMS } from "@/lib/sms";
 
 export const runtime = "nodejs";
 
-const CHARLOTTE_EMAIL = process.env.NODE_ENV === "development" ? "molly@lochsidecreative.com" : "charlottesweeney7@gmail.com";
+const CHARLOTTE_EMAIL = process.env.NODE_ENV === "development" ? "molly@lochsidecreative.com" : "charlotte@squeakycleanstrollers.com";
 const CHARLOTTE_PHONE = "+447344279177";
 
 export async function POST(req: NextRequest) {
@@ -104,8 +104,8 @@ export async function POST(req: NextRequest) {
         emailLayout(`
           <h2 style="margin:0 0 8px;font-size:22px;color:#1f1d1a;">You&apos;re subscribed!</h2>
           <p style="margin:0 0 20px;color:#6b6660;">Hi ${safeName}, your monthly clean subscription is confirmed. First payment of £70 taken today. You&apos;ll be billed again each month.</p>
-          <p style="margin:0 0 20px;color:#6b6660;">Charlotte will be in touch to arrange your first drop-off. Book your monthly slot between the 1st–5th of each month.</p>
-          <p style="margin:0;color:#6b6660;font-size:13px;">Any questions? Contact Charlotte at charlottesweeney7@gmail.com or 07344 279177</p>
+          <p style="margin:0 0 20px;color:#6b6660;">Please contact Charlotte on WhatsApp or message <a href="https://wa.me/447344279177" style="color:#1f1d1a;">07344279177</a> to arrange your drop off time. Book your monthly slot between the 1st–5th of each month.</p>
+          <p style="margin:0;color:#6b6660;font-size:13px;">Any questions? Contact Charlotte at charlotte@squeakycleanstrollers.com or 07344279177</p>
         `)
       );
 
@@ -165,14 +165,14 @@ export async function POST(req: NextRequest) {
         `Your booking is confirmed: ${slotLabel}`,
         emailLayout(`
           <h2 style="margin:0 0 8px;font-size:22px;color:#1f1d1a;">You&apos;re booked in!</h2>
-          <p style="margin:0 0 20px;color:#6b6660;">Hi ${safeName}, your booking is confirmed for <strong style="color:#1f1d1a;">${safeSlot}</strong>. Charlotte will be in touch to arrange your drop-off time.</p>
+          <p style="margin:0 0 20px;color:#6b6660;">Hi ${safeName}, your booking is confirmed for <strong style="color:#1f1d1a;">${safeSlot}</strong>. Please contact Charlotte on WhatsApp or message <a href="https://wa.me/447344279177" style="color:#1f1d1a;">07344279177</a> to arrange your drop off time.</p>
           <p style="margin:0 0 8px;color:#6b6660;font-size:13px;">Items booked:</p>
           ${itemsTable(booking.items)}
           <table width="100%" style="border-collapse:collapse;margin:0 0 16px;">
             <tr><td style="padding:4px 0;color:#6b6660;width:160px;">${paidInFull ? "Paid in full" : "Deposit paid"}</td><td style="padding:4px 0;color:#1f1d1a;font-weight:600;">£${amountPaidGBP}</td></tr>
             <tr><td style="padding:4px 0;color:#6b6660;">${paidInFull ? "Due on collection" : "Remainder on collection"}</td><td style="padding:4px 0;color:#1f1d1a;">£${remainderGBP}</td></tr>
           </table>
-          <p style="margin:0;color:#6b6660;font-size:13px;">Any questions? Contact Charlotte at charlottesweeney7@gmail.com or 07344 279177</p>
+          <p style="margin:0;color:#6b6660;font-size:13px;">Any questions? Contact Charlotte at charlotte@squeakycleanstrollers.com or 07344279177</p>
         `)
       );
 
