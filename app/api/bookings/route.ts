@@ -130,29 +130,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ checkoutUrl: session.url });
   } catch (err) {
     console.error("POST /api/bookings error:", err);
-    // Temporary diagnostic: only exposed when the secret debug header is sent,
-    // never to real users. Remove once the Stripe config is confirmed working.
-    const debug = req.headers.get("x-scs-debug") === "diag-2026";
-    const key = process.env.STRIPE_SECRET_KEY ?? "";
-    const e = err as { type?: string; detail?: unknown; cause?: unknown };
-    return NextResponse.json(
-      {
-        error: "Something went wrong",
-        ...(debug
-          ? {
-              detail: {
-                msg: String(err),
-                type: e?.type,
-                cause: String(e?.detail ?? e?.cause ?? ""),
-                keyPrefix: key.slice(0, 8),
-                keyLen: key.length,
-                keyTrimmedLen: key.trim().length,
-                siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
-              },
-            }
-          : {}),
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
