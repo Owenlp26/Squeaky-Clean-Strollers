@@ -43,7 +43,7 @@ export default function AboutPage() {
               </p>
             </div>
 
-            {/* Charlotte photos */}
+            {/* Charlotte photo */}
             <div className="flex flex-col gap-4">
               <div className="overflow-hidden rounded-2xl">
                 <Image
@@ -51,16 +51,7 @@ export default function AboutPage() {
                   alt="Charlotte, founder of Squeaky Clean Strollers"
                   width={420}
                   height={520}
-                  className="h-[320px] w-full object-cover object-center"
-                />
-              </div>
-              <div className="overflow-hidden rounded-2xl">
-                <Image
-                  src="/charlotte-working.jpg"
-                  alt="Charlotte at work cleaning baby gear"
-                  width={420}
-                  height={520}
-                  className="h-[320px] w-full object-cover object-bottom"
+                  className="h-[420px] w-full object-cover object-center"
                 />
               </div>
             </div>
