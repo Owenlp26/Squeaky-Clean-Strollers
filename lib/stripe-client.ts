@@ -6,6 +6,10 @@ export function getStripe(): Stripe {
   if (!_stripe) {
     _stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
       apiVersion: "2026-05-27.dahlia",
+      // Use the fetch-based HTTP client — the default Node client can fail to
+      // connect in serverless/edge runtimes (Netlify), causing
+      // "An error occurred with our connection to Stripe".
+      httpClient: Stripe.createFetchHttpClient(),
     });
   }
   return _stripe;

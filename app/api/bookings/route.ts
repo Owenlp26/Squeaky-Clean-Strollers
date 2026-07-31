@@ -5,6 +5,8 @@ import { getServiceItemById } from "@/data/services";
 import { redis } from "@/lib/db";
 import { getClientIp } from "@/lib/client-ip";
 
+export const runtime = "nodejs";
+
 const MAX_BOOKINGS_PER_WINDOW = 15;
 const WINDOW_SECONDS = 60 * 60; // 1 hour
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
