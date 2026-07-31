@@ -47,10 +47,10 @@ export default function AboutPage() {
             <div className="flex flex-col gap-4">
               <div className="overflow-hidden rounded-2xl">
                 <Image
-                  src="/charlotte.jpg"
+                  src="/about-charlotte.jpg"
                   alt="Charlotte, founder of Squeaky Clean Strollers"
                   width={420}
-                  height={280}
+                  height={520}
                   className="h-[320px] w-full object-cover object-center"
                 />
               </div>
