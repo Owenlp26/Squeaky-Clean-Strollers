@@ -128,6 +128,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ checkoutUrl: session.url });
   } catch (err) {
     console.error("POST /api/bookings error:", err);
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    // Temporary diagnostic: only exposed when the secret debug header is sent,
+    // never to real users. Remove once the Stripe config is confirmed working.
+    const debug = req.headers.get("x-scs-debug") === "diag-2026";
+    return NextResponse.json(
+      { error: "Something went wrong", ...(debug ? { detail: String(err) } : {}) },
+      { status: 500 }
+    );
   }
 }
