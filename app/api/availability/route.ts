@@ -78,16 +78,39 @@ export async function GET(req: NextRequest) {
     }
 
     const durationMins = durationHours > 0 ? Math.ceil(durationHours * 60) : 0;
-    const seenDates = new Set<string>();
+
+    // How many days the cleaning is allowed to "roll over" across from the
+    // drop-off date (matches the 6-day max turnaround).
+    const TURNAROUND_DAYS = 6;
+    const DAY_MS = 24 * 60 * 60 * 1000;
+
+    // Total available minutes per date (a date can have more than one window).
+    const minutesByDate = new Map<string, number>();
+    for (const w of windows) {
+      const mins = Math.max(0, timeToMinutes(w.end) - timeToMinutes(w.start));
+      minutesByDate.set(w.date, (minutesByDate.get(w.date) ?? 0) + mins);
+    }
+
+    // Available drop-off dates, chronological.
+    const dates = Array.from(minutesByDate.keys()).sort();
     const slots: AvailabilitySlot[] = [];
 
-    for (const window of windows) {
-      if (seenDates.has(window.date)) continue;
-      // Only include the date if the window is long enough for the service
-      const windowMins = timeToMinutes(window.end) - timeToMinutes(window.start);
-      if (durationMins > 0 && windowMins < durationMins) continue;
-      seenDates.add(window.date);
-      slots.push({ date: window.date, label: formatDateLabel(window.date) });
+    for (const date of dates) {
+      if (durationMins > 0) {
+        // Sum Charlotte's availability from this drop-off date across the
+        // turnaround window, so a big basket rolls over into following days.
+        const start = new Date(`${date}T00:00:00`).getTime();
+        const horizon = start + TURNAROUND_DAYS * DAY_MS;
+        let cumulativeMins = 0;
+        for (const d of dates) {
+          const t = new Date(`${d}T00:00:00`).getTime();
+          if (t < start) continue;
+          if (t > horizon) break;
+          cumulativeMins += minutesByDate.get(d) ?? 0;
+        }
+        if (cumulativeMins < durationMins) continue;
+      }
+      slots.push({ date, label: formatDateLabel(date) });
     }
 
     return NextResponse.json({ slots });
