@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import type { ServiceCategory, ServiceItem } from "@/data/services";
 import type { AvailabilitySlot } from "@/app/api/availability/route";
@@ -53,6 +53,18 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
       .finally(() => setSlotsLoading(false));
   }, [step, slotsLoaded, totalDuration]);
 
+  // Scroll back to the top of the booking flow when the step changes, so mobile
+  // users don't land at the bottom of the page after tapping "Next".
+  const topRef = useRef<HTMLDivElement>(null);
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [step]);
+
   // Reset slot selection if user goes back and changes items
   useEffect(() => {
     setSelectedSlot(null);
@@ -104,7 +116,7 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
   const steps = ["Items", "Date", "Details", "Confirm"];
 
   return (
-    <div>
+    <div ref={topRef} className="scroll-mt-24">
       {/* Progress */}
       <div className="mb-8 flex items-center gap-2">
         {steps.map((label, i) => {

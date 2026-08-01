@@ -63,6 +63,12 @@ export default function Home() {
               >
                 We clean everything your little one uses, from car seats and buggies to travel cots, high chairs, changing bags and so much more. Every single item is assessed individually, priced fairly and given the same level of care and attention from top to bottom because your little one deserves nothing less.
               </p>
+              <p
+                className="mt-4 text-base"
+                style={{ color: "var(--taupe)" }}
+              >
+                Your little one&apos;s equipment collects bacteria, grime and buildup in all the places you cannot see and cannot reach no matter how often you wipe it down. Which is why every service we offer is a full professional deep clean from top to bottom until every single part is sparkling clean, sanitised and genuinely fresh.
+              </p>
               <Link
                 href="/services"
                 className="inline-block mt-6 text-sm transition-all duration-200"
