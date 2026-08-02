@@ -54,7 +54,10 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
   }, [step, slotsLoaded, totalDuration]);
 
   // Scroll back to the top of the booking flow when the step changes, so mobile
-  // users don't land at the bottom of the page after tapping "Next".
+  // users don't land at the bottom of the page after tapping "Next". We compute
+  // the target position after the new step has painted (via rAF) and use
+  // window.scrollTo — scrollIntoView alone was unreliable because collapsing a
+  // tall step into a short one lets the browser clamp the scroll to the footer.
   const topRef = useRef<HTMLDivElement>(null);
   const firstRender = useRef(true);
   useEffect(() => {
@@ -62,7 +65,14 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
       firstRender.current = false;
       return;
     }
-    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const scrollToTop = () => {
+      const el = topRef.current;
+      if (!el) return;
+      const y = el.getBoundingClientRect().top + window.scrollY - 80; // header offset
+      window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+    };
+    // Two frames: let the new step render + the page height settle first.
+    requestAnimationFrame(() => requestAnimationFrame(scrollToTop));
   }, [step]);
 
   // Reset slot selection if user goes back and changes items
