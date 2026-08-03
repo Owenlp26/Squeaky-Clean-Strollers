@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       typeof customerName !== "string" || customerName.length > 100 ||
       typeof customerEmail !== "string" || !EMAIL_RE.test(customerEmail) ||
       typeof customerPhone !== "string" || !PHONE_RE.test(customerPhone) ||
-      !Array.isArray(itemIds) || itemIds.length > 20 ||
+      !Array.isArray(itemIds) || itemIds.length > 60 ||
       !itemIds.every((id: unknown) => typeof id === "string") ||
       (availabilityNotes != null && (typeof availabilityNotes !== "string" || availabilityNotes.length > 2000))
     ) {

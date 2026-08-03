@@ -12,9 +12,13 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
   const allItems = categories.flatMap((c) => c.items);
 
   const [step, setStep] = useState<Step>(1);
-  const [selectedItems, setSelectedItems] = useState<ServiceItem[]>(() => {
-    const ids = searchParams.get("items")?.split(",") ?? [];
-    return ids.flatMap((id) => allItems.filter((i) => i.id === id));
+  const [quantities, setQuantities] = useState<Record<string, number>>(() => {
+    const ids = searchParams.get("items")?.split(",").filter(Boolean) ?? [];
+    const q: Record<string, number> = {};
+    for (const id of ids) {
+      if (allItems.some((i) => i.id === id)) q[id] = (q[id] ?? 0) + 1;
+    }
+    return q;
   });
   const [selectedSlot, setSelectedSlot] = useState<AvailabilitySlot | null>(null);
   const [notes, setNotes] = useState("");
@@ -29,11 +33,24 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [slotsLoaded, setSlotsLoaded] = useState(false);
 
-  const total = selectedItems.reduce((s, i) => s + i.priceGBP, 0);
+  const qtyOf = (id: string) => quantities[id] ?? 0;
+  const selectedItems = allItems.filter((i) => qtyOf(i.id) > 0);
+  const totalUnits = selectedItems.reduce((s, i) => s + qtyOf(i.id), 0);
+  const total = selectedItems.reduce((s, i) => s + i.priceGBP * qtyOf(i.id), 0);
   const isMonthlyBooking = selectedItems.some((i) => i.isMonthly);
   const deposit = isMonthlyBooking ? total : Math.ceil(total * 0.25);
-  const totalDuration = selectedItems.reduce((s, i) => s + (i.durationHours ?? 0), 0);
+  const totalDuration = selectedItems.reduce((s, i) => s + (i.durationHours ?? 0) * qtyOf(i.id), 0);
   const hasEmergency = selectedItems.some((i) => i.id === "emergency-car-seat" || i.id === "emergency-buggy");
+
+  function setItemQty(item: ServiceItem, n: number) {
+    const next = Math.max(0, Math.min(10, n));
+    setQuantities((prev) => {
+      const copy = { ...prev };
+      if (next <= 0) delete copy[item.id];
+      else copy[item.id] = next;
+      return copy;
+    });
+  }
 
   useEffect(() => {
     if (step !== 2 || slotsLoaded || totalDuration <= 0) return;
@@ -75,20 +92,12 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
     requestAnimationFrame(() => requestAnimationFrame(scrollToTop));
   }, [step]);
 
-  // Reset slot selection if user goes back and changes items
+  // Reset slot selection if user goes back and changes items or quantities
   useEffect(() => {
     setSelectedSlot(null);
     setSlotsLoaded(false);
     setAvailableSlots([]);
-  }, [selectedItems]);
-
-  function toggleItem(item: ServiceItem) {
-    setSelectedItems((prev) =>
-      prev.find((i) => i.id === item.id)
-        ? prev.filter((i) => i.id !== item.id)
-        : [...prev, item]
-    );
-  }
+  }, [quantities]);
 
   async function handleSubmit() {
     setSubmitting(true);
@@ -101,7 +110,7 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
           customerName: name,
           customerPhone: phone,
           customerEmail: email,
-          itemIds: selectedItems.map((i) => i.id),
+          itemIds: selectedItems.flatMap((i) => Array(qtyOf(i.id)).fill(i.id)),
           availability: selectedSlot ? [selectedSlot.label] : [],
 
           availabilityNotes: notes || undefined,
@@ -160,13 +169,20 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
                 <h3 className="mb-3 text-xs uppercase tracking-[0.18em] text-muted">{cat.label}</h3>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {cat.items.map((item) => {
-                    const selected = selectedItems.some((i) => i.id === item.id);
+                    const q = qtyOf(item.id);
+                    const selected = q > 0;
+                    const isEmergency = item.id === "emergency-car-seat" || item.id === "emergency-buggy";
+                    // Quantity stepper only for standard bookable items (not the
+                    // monthly package or contact-only emergency cleans).
+                    const showStepper = selected && !item.isMonthly && !isEmergency;
                     return (
-                      <button
+                      <div
                         key={item.id}
-                        type="button"
-                        onClick={() => toggleItem(item)}
-                        className={`flex items-center justify-between rounded-xl border px-4 py-3 text-left text-sm transition-colors ${selected ? "border-accent bg-accent-soft" : "border-border bg-card hover:border-accent/50"}`}
+                        onClick={() => { if (!selected) setItemQty(item, 1); }}
+                        role={!selected ? "button" : undefined}
+                        tabIndex={!selected ? 0 : undefined}
+                        onKeyDown={!selected ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setItemQty(item, 1); } } : undefined}
+                        className={`flex items-center justify-between rounded-xl border px-4 py-3 text-left text-sm transition-colors ${selected ? "border-accent bg-accent-soft" : "border-border bg-card hover:border-accent/50 cursor-pointer"}`}
                       >
                         <div>
                           <div className="font-medium">{item.name}</div>
@@ -174,15 +190,28 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
                         </div>
                         <div className="flex items-center gap-3 flex-shrink-0 pl-3">
                           <span className="font-display font-semibold">£{item.priceGBP}</span>
-                          <div className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${selected ? "border-accent bg-accent text-background" : "border-border"}`}>
-                            {selected && (
-                              <svg viewBox="0 0 12 12" fill="currentColor" className="h-3 w-3">
-                                <path fillRule="evenodd" d="M10.5 3a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06L5.5 7 9.44 3a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
-                              </svg>
-                            )}
-                          </div>
+                          {showStepper ? (
+                            <div className="flex items-center gap-2">
+                              <button type="button" aria-label={`Decrease ${item.name}`} onClick={(e) => { e.stopPropagation(); setItemQty(item, q - 1); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-border text-base leading-none hover:border-accent">−</button>
+                              <span className="w-4 text-center font-medium tabular-nums">{q}</span>
+                              <button type="button" aria-label={`Increase ${item.name}`} disabled={q >= 10} onClick={(e) => { e.stopPropagation(); setItemQty(item, q + 1); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-border text-base leading-none hover:border-accent disabled:opacity-40">+</button>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              aria-label={selected ? `Remove ${item.name}` : `Add ${item.name}`}
+                              onClick={(e) => { e.stopPropagation(); setItemQty(item, selected ? 0 : 1); }}
+                              className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${selected ? "border-accent bg-accent text-background" : "border-border"}`}
+                            >
+                              {selected && (
+                                <svg viewBox="0 0 12 12" fill="currentColor" className="h-3 w-3">
+                                  <path fillRule="evenodd" d="M10.5 3a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06L5.5 7 9.44 3a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
+                                </svg>
+                              )}
+                            </button>
+                          )}
                         </div>
-                      </button>
+                      </div>
                     );
                   })}
                 </div>
@@ -193,7 +222,7 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
           {selectedItems.length > 0 && (
             <div className="mt-6 rounded-xl border border-border bg-card p-4 text-sm">
               <div className="flex items-center justify-between font-medium">
-                <span>{selectedItems.length} item{selectedItems.length !== 1 ? "s" : ""} selected</span>
+                <span>{totalUnits} item{totalUnits !== 1 ? "s" : ""} selected</span>
                 <span>Total: £{total}{isMonthlyBooking ? "/month" : ""}</span>
               </div>
               {isMonthlyBooking
@@ -373,8 +402,8 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
               <div className="text-xs uppercase tracking-[0.15em] text-muted mb-3">Items</div>
               {selectedItems.map((item) => (
                 <div key={item.id} className="flex justify-between py-1.5 text-sm">
-                  <span>{item.name}</span>
-                  <span className="font-medium">£{item.priceGBP}</span>
+                  <span>{item.name}{qtyOf(item.id) > 1 ? ` ×${qtyOf(item.id)}` : ""}</span>
+                  <span className="font-medium">£{item.priceGBP * qtyOf(item.id)}</span>
                 </div>
               ))}
               <div className="mt-3 border-t border-border pt-3 flex justify-between text-sm font-semibold">

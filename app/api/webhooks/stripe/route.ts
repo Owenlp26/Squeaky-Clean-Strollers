@@ -11,6 +11,15 @@ export const runtime = "nodejs";
 const CHARLOTTE_EMAIL = process.env.NODE_ENV === "development" ? "molly@lochsidecreative.com" : "charlotte@squeakycleanstrollers.com";
 const CHARLOTTE_PHONE = "+447344279177";
 
+// Collapse repeated items into "Car seat ×2, Doona" for calendar titles / SMS.
+function summariseItems(items: { name: string }[]): string {
+  const counts = new Map<string, number>();
+  for (const i of items) counts.set(i.name, (counts.get(i.name) ?? 0) + 1);
+  return Array.from(counts.entries())
+    .map(([name, c]) => (c > 1 ? `${name} x${c}` : name))
+    .join(", ");
+}
+
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const sig = req.headers.get("stripe-signature");
@@ -126,7 +135,7 @@ export async function POST(req: NextRequest) {
 
       let calendarEventId: string | null = null;
       if (slot) {
-        const itemNames = booking.items.map((i) => i.name).join(", ");
+        const itemNames = summariseItems(booking.items);
         calendarEventId = await createBookingEvent({
           title: `BOOKED: ${booking.customerName} / ${itemNames}`,
           date: slot.date,
@@ -181,7 +190,7 @@ export async function POST(req: NextRequest) {
         `Hi ${(booking.customerName ?? "").split(" ")[0] || "there"}, your Squeaky Clean Strollers booking is confirmed for ${slotLabel}. Charlotte will text you to arrange drop-off. Questions? 07344 279177`
       );
 
-      const itemSummary = booking.items.map((i) => i.name).join(", ");
+      const itemSummary = summariseItems(booking.items);
       await sendSMS(
         CHARLOTTE_PHONE,
         `New booking paid: ${booking.customerName}, ${itemSummary}, ${slotLabel}. £${booking.totalGBP} total ${paidInFull ? "(paid in full)" : `(£${booking.depositGBP} deposit received)`}`

@@ -61,6 +61,17 @@ export function ctaButton(href: string, label: string): string {
 }
 
 export function itemsTable(items: { name: string; priceGBP: number }[]): string {
-  const rows = items.map(i => `<tr><td style="padding:6px 0;color:#1f1d1a;">${escapeHtml(i.name)}</td><td style="padding:6px 0;text-align:right;color:#1f1d1a;">£${Number(i.priceGBP)}</td></tr>`).join("");
+  // Group identical items so quantities show as "Name ×N" with a line total.
+  const groups = new Map<string, { name: string; priceGBP: number; qty: number }>();
+  for (const i of items) {
+    const key = `${i.name}|${i.priceGBP}`;
+    const g = groups.get(key);
+    if (g) g.qty += 1;
+    else groups.set(key, { name: i.name, priceGBP: Number(i.priceGBP), qty: 1 });
+  }
+  const rows = Array.from(groups.values()).map(g => {
+    const label = g.qty > 1 ? `${escapeHtml(g.name)} &times;${g.qty}` : escapeHtml(g.name);
+    return `<tr><td style="padding:6px 0;color:#1f1d1a;">${label}</td><td style="padding:6px 0;text-align:right;color:#1f1d1a;">£${g.priceGBP * g.qty}</td></tr>`;
+  }).join("");
   return `<table width="100%" style="border-collapse:collapse;margin:16px 0;">${rows}</table>`;
 }
