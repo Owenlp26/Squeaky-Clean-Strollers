@@ -57,7 +57,7 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
     setSlotsLoading(true);
     const from = new Date();
     const to = new Date();
-    to.setDate(to.getDate() + 42); // 6 weeks
+    to.setDate(to.getDate() + 90); // ~3 months ahead (server caps at 92 days)
     fetch(
       `/api/availability?from=${from.toISOString().slice(0, 10)}&to=${to.toISOString().slice(0, 10)}&durationHours=${totalDuration}`
     )
