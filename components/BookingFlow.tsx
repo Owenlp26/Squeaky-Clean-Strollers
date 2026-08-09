@@ -40,7 +40,7 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
   const isMonthlyBooking = selectedItems.some((i) => i.isMonthly);
   const deposit = isMonthlyBooking ? total : Math.ceil(total * 0.25);
   const totalDuration = selectedItems.reduce((s, i) => s + (i.durationHours ?? 0) * qtyOf(i.id), 0);
-  const hasEmergency = selectedItems.some((i) => i.id === "emergency-car-seat" || i.id === "emergency-buggy");
+  const hasEmergency = selectedItems.some((i) => i.id === "emergency-buggy");
 
   function setItemQty(item: ServiceItem, n: number) {
     const next = Math.max(0, Math.min(10, n));
@@ -171,7 +171,7 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
                   {cat.items.map((item) => {
                     const q = qtyOf(item.id);
                     const selected = q > 0;
-                    const isEmergency = item.id === "emergency-car-seat" || item.id === "emergency-buggy";
+                    const isEmergency = item.id === "emergency-buggy";
                     // Quantity stepper only for standard bookable items (not the
                     // monthly package or contact-only emergency cleans).
                     const showStepper = selected && !item.isMonthly && !isEmergency;

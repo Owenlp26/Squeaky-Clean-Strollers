@@ -43,6 +43,7 @@ export const serviceCategories: ServiceCategory[] = [
       { id: "sleepyhead", name: "Sleepyhead / Dock-a-Tot", priceGBP: 30, turnaroundDays: 6, durationHours: 4 },
       { id: "changing-bag", name: "Changing bag", priceGBP: 15, turnaroundDays: 6, durationHours: 3 },
       { id: "footmuff", name: "Footmuff or cover", priceGBP: 10, turnaroundDays: 6, durationHours: 3 },
+      { id: "soiled-mould-charge", name: "Soiled / mould surcharge", priceGBP: 8, turnaroundDays: 6, durationHours: 0.5, note: "Per item, always confirmed before we proceed" },
     ],
   },
   {
@@ -93,9 +94,8 @@ export const serviceCategories: ServiceCategory[] = [
     id: "emergency-addons",
     label: "Emergency / 24 hour service",
     items: [
-      { id: "emergency-car-seat", name: "Emergency car seat clean", priceGBP: 50, pricePrefix: "from", turnaroundDays: 1, durationHours: 1.5, note: "24hr turnaround. Contact Charlotte to arrange." },
+      { id: "emergency-car-seat", name: "Emergency car seat clean", priceGBP: 50, turnaroundDays: 1, durationHours: 1.5, note: "24hr turnaround" },
       { id: "emergency-buggy", name: "Emergency buggy clean", priceGBP: 50, pricePrefix: "from", turnaroundDays: 1, durationHours: 2.5, note: "24hr turnaround. Contact Charlotte to arrange." },
-      { id: "soiled-mould-charge", name: "Soiled / mould surcharge", priceGBP: 8, turnaroundDays: 6, durationHours: 0.5, note: "Per item, always confirmed before we proceed" },
     ],
   },
 ];
