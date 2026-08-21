@@ -89,22 +89,39 @@ export async function getAvailableWindows(from: Date, to: Date): Promise<Availab
   if (!res.ok) return [];
 
   const data = await res.json();
-  const events: { summary?: string; start?: { dateTime?: string }; end?: { dateTime?: string } }[] =
-    data.items ?? [];
+  const events: {
+    summary?: string;
+    start?: { dateTime?: string; date?: string };
+    end?: { dateTime?: string; date?: string };
+  }[] = data.items ?? [];
 
   const windows: AvailableWindow[] = [];
   for (const event of events) {
     if (event.summary?.toLowerCase().trim() !== "available") continue;
-    if (!event.start?.dateTime || !event.end?.dateTime) continue;
 
-    const startDt = new Date(event.start.dateTime);
-    const endDt = new Date(event.end.dateTime);
+    // Timed "Available" event (has specific start/end clock times).
+    if (event.start?.dateTime && event.end?.dateTime) {
+      const startDt = new Date(event.start.dateTime);
+      const endDt = new Date(event.end.dateTime);
+      const date = startDt.toLocaleDateString("en-CA"); // YYYY-MM-DD in local time
+      const start = startDt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+      const end = endDt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+      windows.push({ date, start, end });
+      continue;
+    }
 
-    const date = startDt.toLocaleDateString("en-CA"); // YYYY-MM-DD in local time
-    const start = startDt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-    const end = endDt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-
-    windows.push({ date, start, end });
+    // All-day "Available" event (start.date / end.date; end is exclusive).
+    // Treat each covered day as a full-day availability window so it shows too.
+    if (event.start?.date && event.end?.date) {
+      const cursor = new Date(`${event.start.date}T00:00:00`);
+      const endExclusive = new Date(`${event.end.date}T00:00:00`);
+      let guard = 0;
+      while (cursor < endExclusive && guard < 400) {
+        windows.push({ date: cursor.toLocaleDateString("en-CA"), start: "00:00", end: "23:59" });
+        cursor.setDate(cursor.getDate() + 1);
+        guard++;
+      }
+    }
   }
 
   return windows;
