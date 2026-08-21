@@ -5,7 +5,7 @@ import { getClientIp } from "@/lib/client-ip";
 
 const MAX_REQUESTS_PER_WINDOW = 60;
 const RATE_WINDOW_SECONDS = 10 * 60; // 10 minutes
-const MAX_RANGE_DAYS = 92; // clamp attacker-supplied ranges to a sane maximum
+const MAX_RANGE_DAYS = 185; // clamp attacker-supplied ranges to ~6 months
 
 export type AvailabilitySlot = {
   date: string;  // "2025-06-23"
