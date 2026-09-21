@@ -27,7 +27,6 @@ export const serviceCategories: ServiceCategory[] = [
       { id: "foldable-pram", name: "Foldable / travel pram", priceGBP: 38, turnaroundDays: 6, durationHours: 5 },
       { id: "double-buggy", name: "Double pram / buggy with detachable frame", priceGBP: 60, turnaroundDays: 6, durationHours: 6 },
       { id: "double-foldable-buggy", name: "Double travel buggy (inc. Baby Jogger type)", priceGBP: 55, turnaroundDays: 6, durationHours: 6 },
-      { id: "icandy", name: "iCandy pram: frame, bassinet & toddler seat", priceGBP: 48, turnaroundDays: 6, durationHours: 7 },
       { id: "bassinet", name: "Bassinet only", priceGBP: 30, turnaroundDays: 6, durationHours: 4 },
       { id: "toddler-seat", name: "Toddler seat only", priceGBP: 30, turnaroundDays: 6, durationHours: 4 },
       { id: "frame-only", name: "Frame only", priceGBP: 20, turnaroundDays: 6, durationHours: 4 },
