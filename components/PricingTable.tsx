@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, useInView } from "framer-motion";
 import { serviceCategories } from "@/data/services";
 
-const NON_BOOKABLE = new Set(["emergency-buggy", "soiled-mould-charge"]);
+const NON_BOOKABLE = new Set(["emergency-buggy", "soiled-mould-charge", "leather-pram-charge"]);
 
 function PriceRow({ item, index }: { item: (typeof serviceCategories)[0]["items"][0]; index: number }) {
   const ref = useRef(null);
