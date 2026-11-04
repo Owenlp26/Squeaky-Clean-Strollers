@@ -43,7 +43,7 @@ export const serviceCategories: ServiceCategory[] = [
       { id: "changing-bag", name: "Changing bag", priceGBP: 15, turnaroundDays: 6, durationHours: 3 },
       { id: "footmuff", name: "Footmuff or cover", priceGBP: 10, turnaroundDays: 6, durationHours: 3 },
       { id: "soiled-mould-charge", name: "Heavily soiled / mould charge", priceGBP: 10, turnaroundDays: 6, durationHours: 0.5, note: "Per item, always confirmed before we proceed" },
-      { id: "leather-pram-charge", name: "Leather pram clean charge", priceGBP: 10, turnaroundDays: 6, durationHours: 0.5, note: "For prams with mainly eco-leather / leather covering — specialised products are used for this clean" },
+      { id: "leather-pram-charge", name: "Leather pram clean charge", priceGBP: 10, turnaroundDays: 6, durationHours: 0.5, note: "For prams with mainly eco-leather / leather covering. Specialised products are used for this clean" },
     ],
   },
   {

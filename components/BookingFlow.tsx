@@ -293,7 +293,7 @@ export function BookingFlow({ categories }: { categories: ServiceCategory[] }) {
               </div>
               {process.env.NODE_ENV === "development" && (
                 <div className="rounded-xl border border-dashed border-amber-400 bg-amber-50 p-4 text-sm">
-                  <p className="font-medium text-amber-800">Dev mode — no Google Calendar connected</p>
+                  <p className="font-medium text-amber-800">Dev mode: no Google Calendar connected</p>
                   <p className="mt-1 text-amber-700">Use a test date to proceed through the payment flow.</p>
                   <button
                     type="button"
